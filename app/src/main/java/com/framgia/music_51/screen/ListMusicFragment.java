@@ -13,6 +13,7 @@ import com.framgia.music_51.R;
 import com.framgia.music_51.databinding.FragmentListMusicBinding;
 
 public class ListMusicFragment extends Fragment {
+    public static final String TAG = "ListMusicFragment";
     private FragmentListMusicBinding mBinding;
 
     public static ListMusicFragment newInstance() {
