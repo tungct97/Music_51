@@ -1,5 +1,7 @@
 package com.framgia.music_51.screen.home;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +15,7 @@ import com.framgia.music_51.R;
 import com.framgia.music_51.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
+    public static final String TAG = "HomeFragment";
     private FragmentHomeBinding mBinding;
 
     public static HomeFragment newInstance() {

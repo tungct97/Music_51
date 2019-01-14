@@ -13,6 +13,7 @@ import com.framgia.music_51.R;
 import com.framgia.music_51.databinding.FragmentPersonBinding;
 
 public class PersonFragment extends Fragment {
+    public static final String TAG = "PersonFragment";
     private FragmentPersonBinding mBinding;
 
     public static PersonFragment newInstance() {
