@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Music_51</string>
     <string name="title_see_all">See all >></string>
+    <string name="title_search">Tìm kiếm bài hát</string>
 </resources>
