@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".screen.SearchActivity" />
-        <activity android:name=".screen.DetailGenreActivity" />
+        <activity android:name=".screen.detail_genre.DetailGenreActivity" />
     </application>
 
 </manifest>
