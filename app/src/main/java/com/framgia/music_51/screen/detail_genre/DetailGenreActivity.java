@@ -1,4 +1,4 @@
-package com.framgia.music_51.screen;
+package com.framgia.music_51.screen.detail_genre;
 
 import android.content.Context;
 import android.content.Intent;

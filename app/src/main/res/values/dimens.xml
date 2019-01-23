@@ -17,4 +17,7 @@
     <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_55">55dp</dimen>
+    <dimen name="dp_56">56dp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="dp_350">350dp</dimen>
 </resources>
