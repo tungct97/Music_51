@@ -1,5 +1,6 @@
 package com.framgia.music_51.screen.home;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +18,10 @@ import java.util.List;
 
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHolder> {
     private List<MusicResponse> mGenres;
+    private Context mContext;
 
-    public GenreAdapter() {
+    public GenreAdapter(Context context) {
+        mContext = context;
         mGenres = new ArrayList<>();
     }
 
@@ -42,7 +45,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
 
     @Override
     public void onBindViewHolder(@NonNull GenreViewHolder genreViewHolder, int i) {
-        genreViewHolder.setBinding(mGenres.get(i));
+        genreViewHolder.setBinding(mContext,     mGenres.get(i));
     }
 
     @Override
@@ -57,14 +60,14 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
         public GenreViewHolder(ItemGenresBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
-
         }
 
-        public void setBinding(MusicResponse genre) {
+        public void setBinding(Context context, MusicResponse genre) {
             mAdapter = new TrackAdapter();
             mAdapter.setData(getTracks(genre));
             mBinding.recyclerTrack.setAdapter(mAdapter);
             mBinding.setGenre(genre);
+            mBinding.setHandlerClick(new HandlerClick(context));
             mBinding.executePendingBindings();
         }
 

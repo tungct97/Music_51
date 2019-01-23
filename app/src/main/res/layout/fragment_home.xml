@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -10,23 +11,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ViewFlipper
-                android:id="@+id/viewFlipper"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="@dimen/dp_200"
+            <include
+                android:id="@+id/include"
+                layout="@layout/item_search"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_200"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/include" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_genre"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:nestedScrollingEnabled="false"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/viewFlipper" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewPager" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

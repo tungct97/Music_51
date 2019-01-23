@@ -6,6 +6,11 @@
 
         <import type="com.framgia.music_51.screen.BindingUtils" />
 
+
+        <variable
+            name="handlerClick"
+            type="com.framgia.music_51.screen.home.HandlerClick" />
+
         <variable
             name="genre"
             type="com.framgia.music_51.data.model.MusicResponse" />
@@ -29,12 +34,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+            android:id="@+id/button_see_all"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginBottom="8dp"
             android:background="@drawable/state_click"
+            android:onClick="@{() -> handlerClick.onClickNavigatorDetailScreen()}"
             android:text="@string/title_see_all"
             android:textSize="@dimen/sp_10"
             android:textStyle="bold"
