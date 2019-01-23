@@ -20,4 +20,7 @@
     <dimen name="dp_56">56dp</dimen>
     <dimen name="sp_20">20sp</dimen>
     <dimen name="dp_350">350dp</dimen>
+    <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_70">70dp</dimen>
+    <dimen name="sp_15">15sp</dimen>
 </resources>

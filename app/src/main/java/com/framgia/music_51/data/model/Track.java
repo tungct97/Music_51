@@ -1,10 +1,13 @@
 
 package com.framgia.music_51.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Track {
+public class Track implements Parcelable {
 
     @SerializedName("artwork_url")
     @Expose
@@ -21,6 +24,9 @@ public class Track {
     @SerializedName("genre")
     @Expose
     private String mGenre;
+    @SerializedName("publisher_metadata")
+    @Expose
+    private PublisherMetadata mPublisherMetadata;
     @SerializedName("id")
     @Expose
     private int mId;
@@ -33,6 +39,50 @@ public class Track {
     @SerializedName("urn")
     @Expose
     private String mUrn;
+
+    public Track(Parcel in) {
+        mArtworkUrl = in.readString();
+        mDownloadable = in.readByte() != 0;
+        mDownloadUrl = in.readString();
+        mDuration = in.readInt();
+        mGenre = in.readString();
+        mId = in.readInt();
+        mTitle = in.readString();
+        mUri = in.readString();
+        mUrn = in.readString();
+        mPublisherMetadata = in.readParcelable(PublisherMetadata.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mArtworkUrl);
+        dest.writeByte((byte) (mDownloadable ? 1 : 0));
+        dest.writeString(mDownloadUrl);
+        dest.writeInt(mDuration);
+        dest.writeString(mGenre);
+        dest.writeInt(mId);
+        dest.writeString(mTitle);
+        dest.writeString(mUri);
+        dest.writeString(mUrn);
+        dest.writeParcelable((Parcelable) mPublisherMetadata, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Track> CREATOR = new Creator<Track>() {
+        @Override
+        public Track createFromParcel(Parcel in) {
+            return new Track(in);
+        }
+
+        @Override
+        public Track[] newArray(int size) {
+            return new Track[size];
+        }
+    };
 
     public String getArtworkUrl() {
         return mArtworkUrl;
@@ -90,6 +140,15 @@ public class Track {
         mTitle = title;
     }
 
+
+    public PublisherMetadata getPublisherMetadata() {
+        return mPublisherMetadata;
+    }
+
+    public void setPublisherMetadata(PublisherMetadata publisherMetadata) {
+        mPublisherMetadata = publisherMetadata;
+    }
+
     public String getUri() {
         return mUri;
     }
@@ -105,4 +164,5 @@ public class Track {
     public void setUrn(String urn) {
         mUrn = urn;
     }
+
 }

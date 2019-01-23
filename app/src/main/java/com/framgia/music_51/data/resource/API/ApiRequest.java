@@ -13,4 +13,9 @@ public interface ApiRequest {
     Single<MusicResponse> getGenres(
             @Query("kind") String kind,
             @Query("genre") @GenreType String type);
+
+    @GET("/charts")
+    Single<MusicResponse> getTracks(
+            @Query("kind") String kind,
+            @Query("genre") @GenreType String type);
 }
