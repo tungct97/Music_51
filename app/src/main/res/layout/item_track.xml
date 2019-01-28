@@ -45,6 +45,7 @@
                 android:text="@{track.title}"
                 android:ellipsize="end"
                 android:lines="1"
+                android:fontFamily="serif"
                 android:textSize="@dimen/sp_17"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

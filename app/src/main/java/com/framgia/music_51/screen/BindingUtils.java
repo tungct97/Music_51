@@ -11,7 +11,7 @@ public class BindingUtils {
 
     public static String splitGenre(String text) {
         String substring = text.substring(text.lastIndexOf(Utils.COLON) + 1);
-        return substring;
+        return substring.toUpperCase();
     }
 
     @BindingAdapter("imageView")

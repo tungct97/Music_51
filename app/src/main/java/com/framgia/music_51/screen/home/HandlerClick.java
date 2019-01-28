@@ -2,6 +2,7 @@ package com.framgia.music_51.screen.home;
 
 import android.content.Context;
 
+import com.framgia.music_51.data.model.MusicResponse;
 import com.framgia.music_51.screen.detail_genre.DetailGenreActivity;
 import com.framgia.music_51.screen.SearchActivity;
 
@@ -16,7 +17,7 @@ public class HandlerClick {
         mContext.startActivity(SearchActivity.getIntent(mContext));
     }
 
-    public void onClickNavigatorDetailScreen() {
-        mContext.startActivity(DetailGenreActivity.getIntent(mContext));
+    public void onClickNavigatorDetailScreen(MusicResponse genres) {
+        mContext.startActivity(DetailGenreActivity.getIntent(mContext, genres));
     }
 }
