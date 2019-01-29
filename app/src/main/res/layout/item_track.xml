@@ -5,6 +5,9 @@
     <data>
 
         <variable
+            name="handlerClick"
+            type="com.framgia.music_51.screen.home.HandlerClick" />
+        <variable
             name="track"
             type="com.framgia.music_51.data.model.Track" />
     </data>
@@ -15,6 +18,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:cardCornerRadius="@dimen/dp_4"
+        android:onClick="@{()->handlerClick.onClickNavigatorPlayerScreen(track)}"
         app:cardElevation="@dimen/dp_4"
         app:cardUseCompatPadding="true">
 
