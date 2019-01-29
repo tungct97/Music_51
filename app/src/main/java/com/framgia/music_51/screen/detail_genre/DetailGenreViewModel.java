@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.framgia.music_51.data.model.GenreType;
 import com.framgia.music_51.data.model.MusicResponse;
@@ -25,8 +26,8 @@ public class DetailGenreViewModel extends AndroidViewModel {
         mRepository = TrackRepository.getInstance(TrackRemoteDataSource.getInstance());
     }
 
-    LiveData<MusicResponse> getTracks(String kind, @GenreType String type) {
-        mRepository.getTracks(kind, type).observeOn(AndroidSchedulers.mainThread())
+    LiveData<MusicResponse> getTracks(String kind, @GenreType String type, int offset) {
+        mRepository.getTracks(kind, type, offset).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io()).subscribe(new SingleObserver<MusicResponse>() {
             @Override
             public void onSubscribe(Disposable d) {

@@ -7,6 +7,6 @@ import io.reactivex.Single;
 
 public interface TrackDataSource {
     interface Remote {
-        Single<MusicResponse> getTracks(String kind, @GenreType String type);
+        Single<MusicResponse> getTracks(String kind, @GenreType String type, int offset);
     }
 }

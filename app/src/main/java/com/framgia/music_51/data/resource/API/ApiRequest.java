@@ -17,5 +17,6 @@ public interface ApiRequest {
     @GET("/charts")
     Single<MusicResponse> getTracks(
             @Query("kind") String kind,
-            @Query("genre") @GenreType String type);
+            @Query("genre") @GenreType String type,
+            @Query("offset") int offset);
 }
