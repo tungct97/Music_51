@@ -5,12 +5,17 @@
     <data>
 
         <variable
+            name="hanlderClick"
+            type="com.framgia.music_51.screen.detail_genre.HanlderClickItem" />
+
+        <variable
             name="track"
             type="com.framgia.music_51.data.model.Track" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
+        android:onClick="@{() -> hanlderClick.onClickNavigatorPlayScreen(track)}"
         android:layout_height="@dimen/dp_70">
 
         <ImageView

@@ -23,8 +23,8 @@ public class TrackRepository implements TrackDataSource.Remote {
     }
 
     @Override
-    public Single<MusicResponse> getTracks(String kind, String type) {
-        return mRemote.getTracks(kind, type);
+    public Single<MusicResponse> getTracks(String kind, String type, int offset) {
+        return mRemote.getTracks(kind, type, offset);
     }
 }
 

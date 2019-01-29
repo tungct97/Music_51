@@ -25,7 +25,7 @@ public class TrackRemoteDataSource implements TrackDataSource.Remote {
     }
 
     @Override
-    public Single<MusicResponse> getTracks(String kind, String type) {
-        return mUtils.getTracks(kind, type);
+    public Single<MusicResponse> getTracks(String kind, String type, int offset) {
+        return mUtils.getTracks(kind, type, offset);
     }
 }
