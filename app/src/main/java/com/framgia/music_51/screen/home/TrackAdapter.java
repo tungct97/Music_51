@@ -1,5 +1,6 @@
 package com.framgia.music_51.screen.home;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +16,11 @@ import java.util.List;
 
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHolder> {
     private List<Track> mTracks;
+    private Context mContext;
 
-    public TrackAdapter() {
+    public TrackAdapter(Context context) {
         mTracks = new ArrayList<>();
+        mContext = context;
     }
 
     public void setData(List<Track> tracks) {
@@ -39,7 +42,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
 
     @Override
     public void onBindViewHolder(@NonNull TrackViewHolder trackViewHolder, int i) {
-        trackViewHolder.setBinding(mTracks.get(i));
+        trackViewHolder.setBinding(mContext, mTracks.get(i));
     }
 
     @Override
@@ -55,7 +58,8 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
             mBinding = binding;
         }
 
-        public void setBinding(Track track) {
+        public void setBinding(Context context, Track track) {
+            mBinding.setHandlerClick(new HandlerClick(context));
             mBinding.setTrack(track);
             mBinding.executePendingBindings();
         }

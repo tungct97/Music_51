@@ -63,7 +63,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
         }
 
         public void setBinding(Context context, MusicResponse genre) {
-            mAdapter = new TrackAdapter();
+            mAdapter = new TrackAdapter(context);
             mAdapter.setData(getTracks(genre));
             mBinding.recyclerTrack.setAdapter(mAdapter);
             mBinding.setGenre(genre);
