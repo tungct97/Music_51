@@ -1,6 +1,7 @@
 package com.framgia.music_51.screen;
 
 import android.databinding.BindingAdapter;
+import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -19,5 +20,10 @@ public class BindingUtils {
         Glide.with(view.getContext()).load(url).apply(new RequestOptions()
                 .placeholder(R.drawable.image_default))
                 .into(view);
+    }
+
+    @BindingAdapter("imgResource")
+    public static void loadImage(ImageView view, @DrawableRes int res) {
+        view.setImageResource(res);
     }
 }

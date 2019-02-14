@@ -5,6 +5,16 @@
 
     <data>
 
+        <import type="com.framgia.music_51.screen.DateTimeUtils" />
+
+        <variable
+            name="track"
+            type="com.framgia.music_51.data.model.Track" />
+
+        <variable
+            name="handlerClick"
+            type="com.framgia.music_51.screen.play.HandlerClick" />
+
         <variable
             name="viewModel"
             type="com.framgia.music_51.screen.play.PlayerViewModel" />
@@ -20,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
+            imageView=""
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +52,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:textColor="@color/color_white"
                     android:textSize="@dimen/sp_17"
-                    android:text="@{viewModel.currentTrack.getTitle}"
+                    android:text="@{track.getTitle}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:lines="1"
-                    android:text="@{viewModel.currentTrack.getPublisherMetadata.getArtist}"
+                    android:text="@{track.getPublisherMetadata.getArtist}"
                     android:textColor="@color/color_white"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_title" />
@@ -64,7 +75,7 @@
             android:layout_height="@dimen/dp_300"
             android:layout_marginTop="@dimen/dp_100"
             app:layout_constraintEnd_toEndOf="parent"
-            imageView="@{viewModel.currentTrack.getArtworkUrl}"
+            imageView="@{track.getArtworkUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -112,6 +123,8 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
+            android:max="@{viewModel.maxSeekBar}"
+            android:progress="@{viewModel.positionSeekBar}"
             android:layout_marginBottom="@dimen/dp_16"
             app:layout_constraintBottom_toTopOf="@+id/button_play"
             app:layout_constraintEnd_toEndOf="parent"
@@ -123,12 +136,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
+            android:text="@{DateTimeUtils.convertMinisecond(viewModel.positionSeekBar*1000)}"
             android:layout_marginLeft="@dimen/dp_16"
             android:textColor="@color/color_white"
             app:layout_constraintBottom_toTopOf="@+id/seekBar"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
+            android:id="@+id/text_end"
+            android:text="@{DateTimeUtils.convertMinisecond(track.getDuration)}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_16"
@@ -146,7 +162,8 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_18"
-            android:background="@drawable/ic_play_mini"
+            android:background="@{viewModel.playState ? @drawable/ic_pause_mini :@drawable/ic_play_mini}"
+            android:onClick="@{() -> handlerClick.onPlayClick()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -157,6 +174,7 @@
             android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginLeft="@dimen/dp_24"
+            android:onClick="@{() -> handlerClick.onNextClick()}"
             android:layout_marginBottom="@dimen/dp_30"
             android:background="@drawable/ic_next"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -165,11 +183,12 @@
         <ImageView
             android:id="@+id/button_loop"
             android:layout_width="@dimen/dp_32"
+            imgResource="@{viewModel.loopRes}"
             android:layout_height="@dimen/dp_32"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginLeft="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_26"
-            android:background="@drawable/ic_loop"
+            android:onClick="@{() -> handlerClick.onLoopClick()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/button_next" />
 
@@ -181,6 +200,7 @@
             android:layout_marginRight="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_30"
             android:background="@drawable/ic_previous"
+            android:onClick="@{() -> handlerClick.onPreviousClick()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_play" />
 
@@ -188,10 +208,11 @@
             android:id="@+id/button_shuffle"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
+            android:background="@{viewModel.isShuffle ? @drawable/ic_shuffle_active :@drawable/ic_shuffle}"
             android:layout_marginEnd="@dimen/dp_24"
             android:layout_marginRight="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_24"
-            android:background="@drawable/ic_shuffle"
+            android:onClick="@{(shuffle) -> handlerClick.onClickShuffle(viewModel.isShuffle)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_previous" />
     </android.support.constraint.ConstraintLayout>

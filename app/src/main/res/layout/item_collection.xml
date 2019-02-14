@@ -37,11 +37,14 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
             android:lines="1"
             android:text="@{track.title}"
             android:textColor="@color/color_black"
             android:textSize="@dimen/sp_15"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_second"
             app:layout_constraintStart_toEndOf="@+id/image_collection"
             app:layout_constraintTop_toTopOf="parent" />
 
