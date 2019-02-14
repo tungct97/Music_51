@@ -32,4 +32,8 @@
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_300">300dp</dimen>
     <dimen name="dp_100">100dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
+    <dimen name="dp_65">65dp</dimen>
 </resources>
