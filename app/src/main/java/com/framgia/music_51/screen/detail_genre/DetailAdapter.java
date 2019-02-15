@@ -77,7 +77,7 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return mTracks != null ? mTracks.size() : 0;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         private ItemCollectionBinding mBinding;
 
         ViewHolder(ItemCollectionBinding binding) {
@@ -87,7 +87,7 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         void bindTrack(Context context, Track track) {
             mBinding.setTrack(track);
-            mBinding.setHanlderClick(new HanlderClickItem(context));
+            mBinding.setHanlderClick(new HanlderClickItem(context, mTracks));
             mBinding.executePendingBindings();
         }
     }

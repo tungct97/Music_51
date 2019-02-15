@@ -1,12 +1,15 @@
 package com.framgia.music_51.screen.play;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,22 +17,27 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.SeekBar;
 
 import com.bumptech.glide.Glide;
 import com.framgia.music_51.BlurBuilder;
 import com.framgia.music_51.R;
 import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.databinding.ActivityPlayerBinding;
+import com.framgia.music_51.screen.service.TrackService;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class PlayerActivity extends AppCompatActivity {
+public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListener, SeekBar.OnSeekBarChangeListener {
     private static final String EXTRA_TRACK = "EXTRA_TRACK";
     private static final String BUNDLE_TRACK = "BUNDLE_TRACK";
     private ActivityPlayerBinding mBinding;
     private Track mTrack;
+    private boolean mÍsBinded;
+    private TrackService mService;
+    private PlayerViewModel mViewModel;
 
     public static Intent getIntent(Context context, Track track) {
         Bundle bundle = new Bundle();
@@ -38,6 +46,23 @@ public class PlayerActivity extends AppCompatActivity {
         intent.putExtra(BUNDLE_TRACK, bundle);
         return intent;
     }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            TrackService.TrackBinder binder = (TrackService.TrackBinder) service;
+            mService = binder.getService();
+            mÍsBinded = true;
+            if (mService != null) {
+                mService.setUiListener(PlayerActivity.this);
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mÍsBinded = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +76,7 @@ public class PlayerActivity extends AppCompatActivity {
         initAnim();
         getTrack(getTrackIntent());
         initViewModel();
-        displayBackgroundImage();
+        displayBackgroundImage(mTrack);
     }
 
     private void initAnim() {
@@ -60,9 +85,10 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        PlayerViewModel viewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
-        viewModel.setData(mTrack);
-        mBinding.setViewModel(viewModel);
+        mViewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
+        mViewModel.setData(mTrack);
+        mBinding.setViewModel(mViewModel);
+        mBinding.seekBar.setOnSeekBarChangeListener(this);
     }
 
     private void initToolbar() {
@@ -86,9 +112,9 @@ public class PlayerActivity extends AppCompatActivity {
         return mTrack;
     }
 
-    private void displayBackgroundImage() {
+    private void displayBackgroundImage(Track track) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            BlurBuilder.getBimap(mTrack.getArtworkUrl(), this).observeOn(AndroidSchedulers.mainThread())
+            BlurBuilder.getBimap(track.getArtworkUrl(), this).observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io()).subscribe(new Consumer<Bitmap>() {
                 @Override
                 public void accept(Bitmap bitmap) throws Exception {
@@ -97,7 +123,7 @@ public class PlayerActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Glide.with(getApplicationContext()).load(mTrack.getArtworkUrl()).into(mBinding.imagePlayer);
+            Glide.with(getApplicationContext()).load(track.getArtworkUrl()).into(mBinding.imagePlayer);
         }
     }
 
@@ -114,5 +140,70 @@ public class PlayerActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void connectService() {
+        Intent intent = new Intent(PlayerActivity.this, TrackService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        connectService();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mÍsBinded) {
+            unbindService(mConnection);
+            mÍsBinded = false;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void updateStateButton(boolean isPlaying) {
+
+    }
+
+    @Override
+    public void onUpdateUiPlay(Track track) {
+
+    }
+
+    @Override
+    public void onUpdateSeekbar() {
+
+    }
+
+    @Override
+    public void onShuffleStateChange(boolean shuffle) {
+
+    }
+
+    @Override
+    public void onLoopStateChange(int type) {
+
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }

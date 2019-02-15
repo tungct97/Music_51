@@ -55,12 +55,11 @@ public class BlurBuilder {
     }
 
     public static Observable<Bitmap> getBimap(final String src, final Context context) {
-        Observable<Bitmap> bitmapObservable = Observable.create(new ObservableOnSubscribe<Bitmap>() {
+        return Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(ObservableEmitter<Bitmap> emitter) throws Exception {
                 emitter.onNext(getBitmapFromURL(src, context));
             }
         });
-        return bitmapObservable;
     }
 }

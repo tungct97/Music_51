@@ -50,7 +50,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
         return mTracks != null ? mTracks.size() : 0;
     }
 
-    public static class TrackViewHolder extends RecyclerView.ViewHolder {
+    public class TrackViewHolder extends RecyclerView.ViewHolder {
         private ItemTrackBinding mBinding;
 
         public TrackViewHolder(ItemTrackBinding binding) {
@@ -59,7 +59,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
         }
 
         public void setBinding(Context context, Track track) {
-            mBinding.setHandlerClick(new HandlerClick(context));
+            mBinding.setHandlerClick(new HandlerClick(context, mTracks));
             mBinding.setTrack(track);
             mBinding.executePendingBindings();
         }

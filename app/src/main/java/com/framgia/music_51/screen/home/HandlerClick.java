@@ -1,18 +1,28 @@
 package com.framgia.music_51.screen.home;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.framgia.music_51.data.model.MusicResponse;
 import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.screen.detail_genre.DetailGenreActivity;
 import com.framgia.music_51.screen.SearchActivity;
 import com.framgia.music_51.screen.play.PlayerActivity;
+import com.framgia.music_51.screen.service.TrackService;
+
+import java.util.List;
 
 public class HandlerClick {
     private Context mContext;
+    private List<Track> mTracks;
 
     public HandlerClick(Context context) {
         mContext = context;
+    }
+
+    public HandlerClick(Context context, List<Track> tracks) {
+        mContext = context;
+        mTracks = tracks;
     }
 
     public void onClickNavigatorSearchScreen() {
@@ -25,5 +35,8 @@ public class HandlerClick {
 
     public void onClickNavigatorPlayerScreen(Track track){
         mContext.startActivity(PlayerActivity.getIntent(mContext, track));
+        Intent intentService = TrackService.getMusicServiceIntent(mContext,
+                mTracks.indexOf(track), mTracks);
+        mContext.startService(intentService);
     }
 }
