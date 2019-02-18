@@ -1,5 +1,6 @@
 package com.framgia.music_51.screen.play;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,7 +10,9 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +25,7 @@ import android.widget.SeekBar;
 import com.bumptech.glide.Glide;
 import com.framgia.music_51.BlurBuilder;
 import com.framgia.music_51.R;
+import com.framgia.music_51.data.model.PlayMode;
 import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.databinding.ActivityPlayerBinding;
 import com.framgia.music_51.screen.service.TrackService;
@@ -33,11 +37,17 @@ import io.reactivex.schedulers.Schedulers;
 public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListener, SeekBar.OnSeekBarChangeListener {
     private static final String EXTRA_TRACK = "EXTRA_TRACK";
     private static final String BUNDLE_TRACK = "BUNDLE_TRACK";
+    private static final int CONVERT_MINISECOND = 1000;
+    private PlayMode mPlayMode;
     private ActivityPlayerBinding mBinding;
     private Track mTrack;
+    private int mPosition;
     private boolean mÍsBinded;
     private TrackService mService;
+    private Handler mHandler = new Handler();
+    private MediaListener mListener;
     private PlayerViewModel mViewModel;
+    private Runnable mRunnable;
 
     public static Intent getIntent(Context context, Track track) {
         Bundle bundle = new Bundle();
@@ -54,7 +64,9 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
             mService = binder.getService();
             mÍsBinded = true;
             if (mService != null) {
+                mListener = mService.getListener();
                 mService.setUiListener(PlayerActivity.this);
+                mBinding.setHandlerClick(new HandlerClick(mListener, mPlayMode, mViewModel, mService));
             }
         }
 
@@ -86,8 +98,9 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
-        mViewModel.setData(mTrack);
+        mBinding.setTrack(mTrack);
         mBinding.setViewModel(mViewModel);
+        mPlayMode = mViewModel.getPlayMode();
         mBinding.seekBar.setOnSeekBarChangeListener(this);
     }
 
@@ -163,33 +176,51 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void updateStateButton(boolean isPlaying) {
-
+        mViewModel.setPlayState(isPlaying);
     }
 
     @Override
     public void onUpdateUiPlay(Track track) {
-
+        mViewModel.setData(track);
+        mViewModel.getCurrentTrack().observe(this, new Observer<Track>() {
+            @Override
+            public void onChanged(@Nullable Track track) {
+                mBinding.setTrack(track);
+                displayBackgroundImage(track);
+            }
+        });
+        onUpdateSeekbar();
+        updateStateButton(mService.isPlaying());
     }
 
     @Override
     public void onUpdateSeekbar() {
-
+        mViewModel.setMaxSeekBar(mService.getDuration() / CONVERT_MINISECOND);
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (mService != null) {
+                    mPosition = mService.getCurrentPosition() / CONVERT_MINISECOND;
+                    mViewModel.onSeekBarPositionChange(mPosition);
+                }
+                mHandler.postDelayed(mRunnable, CONVERT_MINISECOND);
+            }
+        };
+        mHandler.postDelayed(mRunnable, CONVERT_MINISECOND);
     }
 
     @Override
     public void onShuffleStateChange(boolean shuffle) {
-
+        mPlayMode.setShuffer(mPlayMode.isShuffer() ? false : true);
+        mViewModel.setShuffle(mPlayMode.isShuffer());
     }
 
     @Override
     public void onLoopStateChange(int type) {
-
+        mViewModel.setLoopType(type);
+        mPlayMode.setLoopMode(type);
+        mViewModel.savePlayerMode(mPlayMode);
     }
 
     @Override
@@ -204,6 +235,7 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        mViewModel.onSeekBarPositionChange(seekBar.getProgress());
+        mListener.seek(mPosition * CONVERT_MINISECOND);
     }
 }
