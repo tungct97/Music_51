@@ -1,12 +1,18 @@
 
 package com.framgia.music_51.data.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.RoomWarnings;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "track")
 public class Track implements Parcelable {
 
     @SerializedName("artwork_url")
@@ -24,21 +30,28 @@ public class Track implements Parcelable {
     @SerializedName("genre")
     @Expose
     private String mGenre;
-    @SerializedName("publisher_metadata")
-    @Expose
-    private PublisherMetadata mPublisherMetadata;
+    @ColumnInfo(name = "id")
     @SerializedName("id")
+    @PrimaryKey(autoGenerate = true)
     @Expose
     private int mId;
     @SerializedName("title")
     @Expose
     private String mTitle;
+    @SerializedName("publisher_metadata")
+    @Embedded
+    @Expose
+    @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
+    private PublisherMetadata mPublisherMetadata;
     @SerializedName("uri")
     @Expose
     private String mUri;
     @SerializedName("urn")
     @Expose
     private String mUrn;
+
+    public Track() {
+    }
 
     public Track(Parcel in) {
         mArtworkUrl = in.readString();
@@ -164,5 +177,4 @@ public class Track implements Parcelable {
     public void setUrn(String urn) {
         mUrn = urn;
     }
-
 }

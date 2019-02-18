@@ -11,6 +11,8 @@ public interface OnUpdateUIListener {
 
     void onUpdateSeekbar();
 
+    void onLikeStateChange(boolean like);
+
     void onShuffleStateChange(boolean shuffle);
 
     void onLoopStateChange(@LoopType int type);

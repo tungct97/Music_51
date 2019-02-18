@@ -1,18 +1,23 @@
 package com.framgia.music_51.data.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(foreignKeys = @ForeignKey(entity = Track.class, parentColumns = "id", childColumns = "publisher_metadata_id"))
 public class PublisherMetadata implements Parcelable {
+
+    @ColumnInfo(name = "publisher_metadata_id")
     @SerializedName("id")
+    @PrimaryKey
     @Expose
     private int mId;
-    @SerializedName("urn")
-    @Expose
-    private String mUrn;
     @SerializedName("artist")
     @Expose
     private String mArtist;
@@ -28,6 +33,9 @@ public class PublisherMetadata implements Parcelable {
     @SerializedName("album_title")
     @Expose
     private String mAlbumTitle;
+
+    public PublisherMetadata() {
+    }
 
     public static final Creator<PublisherMetadata> CREATOR = new Creator<PublisherMetadata>() {
         @Override
@@ -47,14 +55,6 @@ public class PublisherMetadata implements Parcelable {
 
     public void setId(int id) {
         mId = id;
-    }
-
-    public String getUrn() {
-        return mUrn;
-    }
-
-    public void setUrn(String urn) {
-        mUrn = urn;
     }
 
     public String getArtist() {
@@ -105,7 +105,6 @@ public class PublisherMetadata implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(mId);
-        parcel.writeString(mUrn);
         parcel.writeString(mArtist);
         parcel.writeByte((byte) (mContainsMusic ? 1 : 0));
         parcel.writeString(mPublisher);
@@ -115,7 +114,6 @@ public class PublisherMetadata implements Parcelable {
 
     protected PublisherMetadata(Parcel in) {
         mId = in.readInt();
-        mUrn = in.readString();
         mArtist = in.readString();
         mContainsMusic = in.readByte() != 0;
         mPublisher = in.readString();
