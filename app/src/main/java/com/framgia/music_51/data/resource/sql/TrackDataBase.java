@@ -12,7 +12,7 @@ import static com.framgia.music_51.data.resource.sql.TrackDataBase.DB_VERSION;
 
 @Database(entities = {Track.class, PublisherMetadata.class}, version = DB_VERSION, exportSchema = false)
 public abstract class TrackDataBase extends RoomDatabase {
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 2;
     private static TrackDataBase sInstance;
     private static final String DB_NAME = "track";
 

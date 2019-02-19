@@ -120,8 +120,10 @@ public class PlayerViewModel extends AndroidViewModel {
             @Override
             public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
                 if (favourite) {
+                    track.setFavourite(true);
                     mTrackRepository.addFavorite(track);
                 } else {
+                    track.setFavourite(false);
                     mTrackRepository.removeFavorite(track);
                 }
             }
