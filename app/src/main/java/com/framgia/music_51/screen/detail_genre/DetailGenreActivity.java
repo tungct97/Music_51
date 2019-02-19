@@ -1,5 +1,6 @@
 package com.framgia.music_51.screen.detail_genre;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -62,7 +63,7 @@ public class DetailGenreActivity extends AppCompatActivity {
     }
 
     private void getData() {
-        mViewModel.getTracks(Utils.KIND, mGenre.getGenre(), mOffset).observe(this, new Observer<MusicResponse>() {
+        mViewModel.getTracks(Utils.KIND, mGenre.getGenre(), mOffset).observe((LifecycleOwner) this, new Observer<MusicResponse>() {
             @Override
             public void onChanged(@Nullable MusicResponse musicResponse) {
                 if (musicResponse.getTracks().size() == 0) {

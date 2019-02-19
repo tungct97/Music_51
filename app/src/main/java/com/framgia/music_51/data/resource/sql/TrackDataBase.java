@@ -6,6 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.framgia.music_51.data.model.PublisherMetadata;
+import com.framgia.music_51.data.model.Search;
 import com.framgia.music_51.data.model.Track;
 
 import static com.framgia.music_51.data.resource.sql.TrackDataBase.DB_VERSION;

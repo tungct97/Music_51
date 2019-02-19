@@ -8,4 +8,6 @@
     <string name="title_yes">Yes</string>
     <string name="title_no">No</string>
     <string name="title_question">Bạn có muốn xóa không?</string>
+    <string name="msg_history_search">Lịch sử tìm kiếm</string>
+    <string name="msg_delete">Xóa</string>
 </resources>

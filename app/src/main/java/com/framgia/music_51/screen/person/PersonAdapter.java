@@ -14,6 +14,8 @@ import com.framgia.music_51.databinding.ItemPresonBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.http.HEAD;
+
 public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ListMusicViewHolder>{
     private List<Track> mTracks;
     private PersonHanlderClick mHanlderClick;
@@ -67,6 +69,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ListMusicV
                 mHanlderClick = hanlderClick;
                 mBinding.setTrack(track);
             }
+
         }
 
         @Override

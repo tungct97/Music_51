@@ -21,6 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.http.HEAD;
 
 public class PersonViewModel extends AndroidViewModel {
     private TrackDataBase mTrackDataBase;
@@ -43,8 +44,7 @@ public class PersonViewModel extends AndroidViewModel {
         Disposable disposable = Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
-                mRepository.removeFavorite(track);
-            }
+                mRepository.removeFavorite(track); }
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe();

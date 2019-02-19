@@ -7,6 +7,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import com.framgia.music_51.data.model.Search;
 import com.framgia.music_51.data.model.Track;
 
 import java.util.List;
@@ -22,4 +23,10 @@ public interface TrackDao {
 
     @Delete
     void removeFavorite(Track track);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void saveHistory(Track track);
+
+    @Query("SELECT * FROM track")
+    LiveData<List<Track>> getHistory();
 }

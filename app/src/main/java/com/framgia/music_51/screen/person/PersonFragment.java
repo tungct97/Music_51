@@ -20,6 +20,8 @@ import com.framgia.music_51.databinding.FragmentPersonBinding;
 
 import java.util.List;
 
+import retrofit2.http.HEAD;
+
 public class PersonFragment extends Fragment implements PersonAdapter.PersonHanlderClick {
     public static final String TAG = "PersonFragment";
     private FragmentPersonBinding mBinding;
