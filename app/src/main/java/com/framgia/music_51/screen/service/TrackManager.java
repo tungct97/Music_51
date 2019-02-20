@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.util.Log;
 
 import com.framgia.music_51.BuildConfig;
 import com.framgia.music_51.data.model.LoopType;
@@ -195,6 +196,13 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
         }
     }
 
+    public void like(boolean like) {
+        if (like) {
+            mListener.onLikeStateChange(false);
+        } else {
+            mListener.onLikeStateChange(true);
+        }
+    }
     private void shuffle() {
         Track track = mTracks.get(mPosition);
         mTracks.remove(mPosition);

@@ -86,7 +86,8 @@
             android:layout_marginStart="@dimen/dp_84"
             android:layout_marginLeft="@dimen/dp_84"
             android:layout_marginTop="@dimen/dp_48"
-            android:background="@drawable/ic_heart"
+            android:background="@{viewModel.isLike ? @drawable/ic_heart_1 :@drawable/ic_heart}"
+            android:onClick="@{(like) -> handlerClick.isFavorite(track, viewModel.isLike)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image_music_player" />
 

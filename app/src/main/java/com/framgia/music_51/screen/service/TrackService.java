@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.bumptech.glide.Glide;
@@ -153,8 +154,8 @@ public class TrackService extends Service implements MediaListener {
     }
 
     @Override
-    public void favouriteTrack() {
-
+    public void favouriteTrack(boolean like) {
+        mTrackManager.like(like);
     }
 
     public void createNotification(String title, String artist, String avatar) {

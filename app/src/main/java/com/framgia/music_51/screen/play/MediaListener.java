@@ -26,5 +26,5 @@ public interface MediaListener {
 
     void download();
 
-    void favouriteTrack();
+    void favouriteTrack(boolean like);
 }

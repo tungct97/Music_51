@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -176,6 +177,12 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mViewModel.onDestroy();
+    }
+
+    @Override
     public void updateStateButton(boolean isPlaying) {
         mViewModel.setPlayState(isPlaying);
     }
@@ -211,9 +218,15 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
     }
 
     @Override
+    public void onLikeStateChange(boolean like) {
+        mViewModel.setLike(!like);
+    }
+
+    @Override
     public void onShuffleStateChange(boolean shuffle) {
         mPlayMode.setShuffer(mPlayMode.isShuffer() ? false : true);
         mViewModel.setShuffle(mPlayMode.isShuffer());
+        mViewModel.savePlayerMode(mPlayMode);
     }
 
     @Override

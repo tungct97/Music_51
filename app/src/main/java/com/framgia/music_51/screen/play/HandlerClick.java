@@ -1,7 +1,10 @@
 package com.framgia.music_51.screen.play;
 
+import android.util.Log;
+
 import com.framgia.music_51.data.model.LoopType;
 import com.framgia.music_51.data.model.PlayMode;
+import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.screen.service.TrackService;
 
 public class HandlerClick {
@@ -70,4 +73,8 @@ public class HandlerClick {
         }
     }
 
+    public void isFavorite(Track track, boolean like) {
+        mViewModel.isFavourite(track, !like);
+        mMediaListener.favouriteTrack(!like);
+    }
 }
