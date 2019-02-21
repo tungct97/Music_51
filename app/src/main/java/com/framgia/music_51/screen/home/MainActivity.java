@@ -7,13 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.framgia.music_51.R;
 import com.framgia.music_51.databinding.ActivityMainBinding;
-import com.framgia.music_51.screen.home.HomeFragment;
 import com.framgia.music_51.screen.ListMusicFragment;
-import com.framgia.music_51.screen.PersonFragment;
+import com.framgia.music_51.screen.person.PersonFragment;
 
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {

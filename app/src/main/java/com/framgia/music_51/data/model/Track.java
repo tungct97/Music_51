@@ -13,7 +13,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "track")
-public class Track implements Parcelable {
+public class Track extends Favourite implements Parcelable {
 
     @SerializedName("artwork_url")
     @Expose

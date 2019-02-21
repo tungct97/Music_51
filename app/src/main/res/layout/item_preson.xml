@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingDefaultResource">
+
+    <data>
+
+        <variable
+            name="handlerClick"
+            type="com.framgia.music_51.screen.person.PersonViewModel" />
+
+        <variable
+            name="track"
+            type="com.framgia.music_51.data.model.Track" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:id="@+id/layout_person"
+        android:layout_height="@dimen/dp_70">
+
+        <ImageView
+            android:id="@+id/image_collection"
+            imageView="@{track.artworkUrl}"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_8"
+            android:scaleType="centerCrop"
+            android:src="@drawable/image_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_track"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{track.title}"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/sp_15"
+            app:layout_constraintStart_toEndOf="@+id/image_collection"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@{track.publisherMetadata.artist}"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintStart_toEndOf="@+id/image_collection"
+            app:layout_constraintTop_toBottomOf="@+id/text_track" />
+
+        <ImageView
+            android:id="@+id/menu_collection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:src="@drawable/ic_menu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+    </android.support.constraint.ConstraintLayout>
+</layout>
