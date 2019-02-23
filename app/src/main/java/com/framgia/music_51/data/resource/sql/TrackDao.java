@@ -29,4 +29,10 @@ public interface TrackDao {
 
     @Query("SELECT * FROM track")
     LiveData<List<Track>> getHistory();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addDownload(Track track);
+
+    @Query("SELECT * FROM track")
+    LiveData<List<Track>> getDownloads();
 }

@@ -41,4 +41,15 @@ public class TrackLocalDataSource implements TrackDataSource.Local {
     public void removeFavorite(Track track) {
         mDao.removeFavorite(track);
     }
+
+
+    @Override
+    public void addDownload(Track track) {
+        mDao.addDownload(track);
+    }
+
+    @Override
+    public LiveData<List<Track>> getDownload() {
+        return mDao.getDownloads();
+    }
 }

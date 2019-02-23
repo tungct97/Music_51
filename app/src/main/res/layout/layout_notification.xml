@@ -83,6 +83,15 @@
                     android:layout_toRightOf="@+id/image_notify_pause"
                     android:src="@drawable/ic_next" />
 
+
+                <ImageView
+                    android:id="@+id/image_notify_clear"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_delete"
+                    android:layout_toRightOf="@+id/image_notify_next" />
+
             </RelativeLayout>
 
         </RelativeLayout>

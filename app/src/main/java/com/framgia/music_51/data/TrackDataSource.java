@@ -22,5 +22,9 @@ public interface TrackDataSource {
         LiveData<List<Track>> getFavorites();
 
         void removeFavorite(Track track);
+
+        void addDownload(Track track);
+
+        LiveData<List<Track>> getDownload();
     }
 }

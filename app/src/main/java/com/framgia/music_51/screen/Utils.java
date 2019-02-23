@@ -9,4 +9,10 @@ public class Utils {
                     "linked_partitioning=1&app_version=1532422103&app_locale=en";
     public static final String KIND = "top";
     public static final String COLON = ":";
+    public static final int TYPE_LOCAL = 1;
+    public static final int TYPE_REMOTE = 2;
+    public static final String FOLDER = "FOLDER_NAME";
+    public static final String TRACK = "track";
+    public static final String MP3 = ".mp3";
+    public static final String DOWNLOAD = "Download/";
 }

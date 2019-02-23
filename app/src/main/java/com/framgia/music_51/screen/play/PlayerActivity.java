@@ -67,7 +67,7 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
             if (mService != null) {
                 mListener = mService.getListener();
                 mService.setUiListener(PlayerActivity.this);
-                mBinding.setHandlerClick(new HandlerClick(mListener, mPlayMode, mViewModel, mService));
+                mBinding.setHandlerClick(new HandlerClick(PlayerActivity.this, mListener, mPlayMode, mViewModel, mService));
             }
         }
 

@@ -1,17 +1,22 @@
 package com.framgia.music_51.screen.service;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import com.framgia.music_51.BuildConfig;
+import com.framgia.music_51.R;
 import com.framgia.music_51.data.model.LoopType;
 import com.framgia.music_51.data.model.PlayMode;
 import com.framgia.music_51.data.model.Track;
+import com.framgia.music_51.screen.Utils;
 import com.framgia.music_51.screen.play.OnUpdateUIListener;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +36,11 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
     private String mUrl;
     private int mPosition;
     private PlayMode mPlayMode;
+    private int mTypeTrack;
 
-    public TrackManager(Context context, ArrayList<Track> tracks, int position) {
+    public TrackManager(Context context, ArrayList<Track> tracks, int position, int type) {
         mContext = context;
+        mTypeTrack = type;
         mTracks = tracks;
         mPosition = position;
         mPlayMode = PlayMode.getInstance();
@@ -63,17 +70,30 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+        if (mListener == null) {
+            return;
+        }
         mListener.updateStateButton(mMediaPlayer.isPlaying());
         mListener.onUpdateSeekbar();
     }
 
-    private void buildUrlPlayMusic(int trackId) {
+    private void buildUrlPlayMusic(int trackId, int type) {
+        if (type == Utils.TYPE_REMOTE) {
+            urlRemote(trackId);
+        } else {
+            mUrl = String.valueOf(Environment.getExternalStoragePublicDirectory(
+                    Utils.DOWNLOAD + Utils.FOLDER + File.separator + Utils.TRACK
+                            + File.separator + getTrackCurrent().getTitle() + Utils.MP3));
+        }
+    }
+
+    private String urlRemote(int trackId) {
         StringBuilder builder = new StringBuilder();
         builder.append(BASE_URL_PLAY_MUSIC)
                 .append(trackId)
                 .append(URL)
                 .append(BuildConfig.API_KEY);
-        mUrl = builder.toString();
+        return mUrl = builder.toString();
     }
 
     public void setData(List<Track> tracks) {
@@ -82,7 +102,7 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
                 destroyMediaPlayer();
             }
             mMediaPlayer = new MediaPlayer();
-            buildUrlPlayMusic(tracks.get(mPosition).getId());
+            buildUrlPlayMusic(tracks.get(mPosition).getId(), mTypeTrack);
             mMediaPlayer.setDataSource(mContext, Uri.parse(mUrl));
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.prepareAsync();
@@ -243,4 +263,24 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
         mTracks = new ArrayList<>();
         mTracks.addAll(trackSwap);
     }
+
+    public void download() {
+        DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri uri = Uri.parse(urlRemote(getTrackCurrent().getId()));
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + File.separator + Utils.FOLDER + File.separator + Utils.TRACK;
+        File saveFile = new File(path);
+        File parentDest = saveFile.getParentFile();
+        if (!parentDest.exists()) {
+            parentDest.mkdirs();
+        }
+        String stringDir = Utils.FOLDER + File.separator + Utils.TRACK + File.separator +
+                getTrackCurrent().getTitle() + Utils.MP3;
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setTitle(getTrackCurrent().getTitle());
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, stringDir);
+        downloadManager.enqueue(request);
+    }
+
 }

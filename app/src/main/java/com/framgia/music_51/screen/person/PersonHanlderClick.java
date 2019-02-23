@@ -1,4 +1,4 @@
-package com.framgia.music_51.screen.detail_genre;
+package com.framgia.music_51.screen.person;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,19 +10,19 @@ import com.framgia.music_51.screen.service.TrackService;
 
 import java.util.List;
 
-public class HanlderClickItem {
+public class PersonHanlderClick {
     private Context mContext;
     private List<Track> mTracks;
 
-    public HanlderClickItem(Context context, List<Track> tracks) {
+    public PersonHanlderClick(Context context, List<Track> tracks) {
         mContext = context;
         mTracks = tracks;
     }
 
-    public void onClickNavigatorPlayScreen(Track track) {
+    public void onClickDownload(Track track) {
         mContext.startActivity(PlayerActivity.getIntent(mContext, track));
         Intent intentService = TrackService.getMusicServiceIntent(mContext,
-                mTracks.indexOf(track), mTracks, Utils.TYPE_REMOTE);
+                mTracks.indexOf(track), mTracks, Utils.TYPE_LOCAL);
         mContext.startService(intentService);
     }
 }

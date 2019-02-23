@@ -49,5 +49,15 @@ public class TrackRepository implements TrackDataSource.Remote, TrackDataSource.
     public void removeFavorite(Track track) {
         mLocal.removeFavorite(track);
     }
+
+    @Override
+    public void addDownload(Track track) {
+        mLocal.addDownload(track);
+    }
+
+    @Override
+    public LiveData<List<Track>> getDownload() {
+        return mLocal.getDownload();
+    }
 }
 

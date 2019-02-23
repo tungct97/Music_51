@@ -1,6 +1,6 @@
 package com.framgia.music_51.screen.play;
 
-import android.util.Log;
+import android.content.Context;
 
 import com.framgia.music_51.data.model.LoopType;
 import com.framgia.music_51.data.model.PlayMode;
@@ -12,17 +12,19 @@ public class HandlerClick {
     private PlayMode mPlayMode;
     private PlayerViewModel mViewModel;
     private TrackService mService;
+    private Context mContext;
 
     public HandlerClick(MediaListener mediaListener) {
         mMediaListener = mediaListener;
     }
 
-    public HandlerClick(MediaListener mediaListener, PlayMode playMode, PlayerViewModel viewModel,
+    public HandlerClick(Context context, MediaListener mediaListener, PlayMode playMode, PlayerViewModel viewModel,
                         TrackService service) {
         mMediaListener = mediaListener;
         mPlayMode = playMode;
         mViewModel = viewModel;
         mService = service;
+        mContext = context;
         iniPlayMode();
     }
 
@@ -76,5 +78,10 @@ public class HandlerClick {
     public void isFavorite(Track track, boolean like) {
         mViewModel.isFavourite(track, !like);
         mMediaListener.favouriteTrack(!like);
+    }
+
+    public void onDownloadClick(Track track) {
+        mService.download();
+        mViewModel.saveData(track);
     }
 }

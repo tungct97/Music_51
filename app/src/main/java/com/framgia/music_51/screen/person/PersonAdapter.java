@@ -14,8 +14,6 @@ import com.framgia.music_51.databinding.ItemPresonBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.http.HEAD;
-
 public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ListMusicViewHolder>{
     private List<Track> mTracks;
     private PersonHanlderClick mHanlderClick;
@@ -49,10 +47,12 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ListMusicV
 
     @Override
     public void onBindViewHolder(@NonNull ListMusicViewHolder listMusicViewHolder, int i) {
-        listMusicViewHolder.setBinding(mTracks.get(i), mHanlderClick);
+        if (mTracks.get(i).isFavourite() == true) {
+            listMusicViewHolder.setBinding(mTracks.get(i), mHanlderClick);
+        }
     }
 
-    static class ListMusicViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    class ListMusicViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         private ItemPresonBinding mBinding;
         private PersonHanlderClick mHanlderClick;
         private Track mTrack;
@@ -64,11 +64,9 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ListMusicV
         }
 
         public void setBinding(Track track, PersonHanlderClick hanlderClick) {
-            if (track.isFavourite() == true) {
-                mTrack = track;
-                mHanlderClick = hanlderClick;
-                mBinding.setTrack(track);
-            }
+            mTrack = track;
+            mHanlderClick = hanlderClick;
+            mBinding.setTrack(track);
 
         }
 

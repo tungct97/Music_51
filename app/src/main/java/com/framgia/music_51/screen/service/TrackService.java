@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.bumptech.glide.Glide;
@@ -35,20 +34,25 @@ public class TrackService extends Service implements MediaListener {
     private static final String EXTRA_LIST_TRACK = "EXTRA_LIST_TRACK";
     private static final String ACTION_CHANGE_STATE = "ACTION_CHANGE_STATE";
     private static final String NOTIFICATION_CHANEL = "CHANNEL_ID_NOTIFY";
+    public static final String ACTION_CLEAR = "ACTION_CLEAR";
     private static final int REQUEST_CODE_NEXT = 1;
     private static final int REQUEST_CODE_PREVIOUS = 2;
     private static final int REQUEST_CODE_PAUSE = 3;
+    private static final int REQUEST_CODE_CLEAR = 4;
     private static final int ID_NOTIFICATION = 111;
+    private static final String EXTRA_TRACK_TYPE = "EXTRA_TRACK_TYPE";
     private final IBinder mIBinder = new TrackBinder();
     private TrackManager mTrackManager;
     private int mPosition;
     private ArrayList<Track> mTracks;
     private Notification mNotification;
+    private int mTypeTrack;
     private RemoteViews mRemoteViews;
 
-    public static Intent getMusicServiceIntent(Context context, int position, List<Track> tracks) {
+    public static Intent getMusicServiceIntent(Context context, int position, List<Track> tracks, int type) {
         Intent intent = new Intent(context, TrackService.class);
         intent.putExtra(EXTRA_POSITION, position);
+        intent.putExtra(EXTRA_TRACK_TYPE, type);
         intent.putParcelableArrayListExtra(EXTRA_LIST_TRACK, (ArrayList<? extends Parcelable>) tracks);
         intent.setAction(START_FOREGROUND_SERVICE);
         return intent;
@@ -61,7 +65,7 @@ public class TrackService extends Service implements MediaListener {
             switch (action) {
                 case START_FOREGROUND_SERVICE:
                     setTrack(intent);
-                    mTrackManager = new TrackManager(getApplicationContext(), mTracks, mPosition);
+                    mTrackManager = new TrackManager(getApplicationContext(), mTracks, mPosition, mTypeTrack);
                     setData(mTracks);
                     break;
                 case ACTION_NEXT_TRACK:
@@ -72,6 +76,10 @@ public class TrackService extends Service implements MediaListener {
                     break;
                 case ACTION_CHANGE_STATE:
                     play();
+                    break;
+                case ACTION_CLEAR:
+                    mTrackManager.destroyMediaPlayer();
+                    stopForeground(true);
                     break;
             }
         }
@@ -150,7 +158,7 @@ public class TrackService extends Service implements MediaListener {
 
     @Override
     public void download() {
-
+        mTrackManager.download();
     }
 
     @Override
@@ -170,6 +178,7 @@ public class TrackService extends Service implements MediaListener {
         createIntent(R.id.image_notify_previous, ACTION_PREVIOUS_TRACK,
                 REQUEST_CODE_PREVIOUS);
         createIntent(R.id.image_notify_pause, ACTION_CHANGE_STATE, REQUEST_CODE_PAUSE);
+        createIntent(R.id.image_notify_clear, ACTION_CLEAR, REQUEST_CODE_CLEAR);
     }
 
     private void createIntent(int id, String action, int requestCode) {
@@ -254,6 +263,7 @@ public class TrackService extends Service implements MediaListener {
         mRemoteViews.setImageViewResource(R.id.image_notify_next, R.drawable.ic_next);
         mRemoteViews.setImageViewResource(R.id.image_notify_pause, R.drawable.ic_pause_mini);
         mRemoteViews.setImageViewResource(R.id.image_notify_previous, R.drawable.ic_previous);
+        mRemoteViews.setImageViewResource(R.id.image_notify_clear, R.drawable.ic_delete);
     }
 
     public void updateNotificationChangeTrack(Track track) {
@@ -279,6 +289,7 @@ public class TrackService extends Service implements MediaListener {
         }
         mPosition = intent.getIntExtra(EXTRA_POSITION, 0);
         mTracks = intent.getParcelableArrayListExtra(EXTRA_LIST_TRACK);
+        mTypeTrack = intent.getIntExtra(EXTRA_TRACK_TYPE, 0);
         mTracks.get(mPosition);
     }
 

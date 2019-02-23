@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,15 +17,16 @@ import com.framgia.music_51.R;
 import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.databinding.FragmentPersonBinding;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.http.HEAD;
 
 public class PersonFragment extends Fragment implements PersonAdapter.PersonHanlderClick {
     public static final String TAG = "PersonFragment";
     private FragmentPersonBinding mBinding;
     private PersonAdapter mAdapter;
+    private DownloadAdapter mDownloadAdapter;
     private PersonViewModel mViewModel;
+    private DownloadViewModel mDownloadViewModel;
 
     public static PersonFragment newInstance() {
         return new PersonFragment();
@@ -50,19 +50,34 @@ public class PersonFragment extends Fragment implements PersonAdapter.PersonHanl
 
     private void initView() {
         mAdapter = new PersonAdapter(this);
+        mDownloadAdapter = new DownloadAdapter(getActivity());
         mBinding.recyclerFavourite.setAdapter(mAdapter);
+        mBinding.recyclerDownload.setAdapter(mDownloadAdapter);
     }
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(getActivity()).get(PersonViewModel.class);
+        mDownloadViewModel = ViewModelProviders.of(getActivity()).get(DownloadViewModel.class);
         setData();
     }
 
     private void setData() {
+        mDownloadViewModel.getDownloads().observe(getActivity(), new Observer<List<Track>>() {
+            @Override
+            public void onChanged(@Nullable List<Track> tracks) {
+                mDownloadAdapter.setData(tracks);
+            }
+        });
         mViewModel.getFavourites().observe(getActivity(), new Observer<List<Track>>() {
             @Override
             public void onChanged(@Nullable List<Track> tracks) {
-                mAdapter.setData(tracks);
+                List<Track> trackList = new ArrayList<>();
+                for (Track track : tracks) {
+                    if (track.isFavourite() == true) {
+                        trackList.add(track);
+                        mAdapter.setData(trackList);
+                    }
+                }
             }
         });
     }
@@ -71,6 +86,7 @@ public class PersonFragment extends Fragment implements PersonAdapter.PersonHanl
     public void onDestroy() {
         super.onDestroy();
         mViewModel.onDestroy();
+        mDownloadViewModel.onDestroy();
     }
 
     @Override

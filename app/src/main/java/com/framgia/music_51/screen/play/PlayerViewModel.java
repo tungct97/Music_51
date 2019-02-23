@@ -4,8 +4,10 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.databinding.ObservableField;
+import android.os.Environment;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.framgia.music_51.R;
 import com.framgia.music_51.data.model.LoopType;
@@ -17,6 +19,9 @@ import com.framgia.music_51.data.resource.PlayModeLocalDataSource;
 import com.framgia.music_51.data.resource.TrackLocalDataSource;
 import com.framgia.music_51.data.resource.TrackRemoteDataSource;
 import com.framgia.music_51.data.resource.sql.TrackDataBase;
+import com.framgia.music_51.screen.Utils;
+
+import java.io.File;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -131,5 +136,25 @@ public class PlayerViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .subscribe();
         mCompositeDisposable.add(disposable);
+    }
+
+    public void saveData(final Track track) {
+        Disposable disposable = Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+                mTrackRepository.addDownload(getTrack(track));
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+        mCompositeDisposable.add(disposable);
+    }
+
+    private Track getTrack(Track track) {
+        String stringDir = String.valueOf(Environment.getExternalStoragePublicDirectory(
+                Utils.DOWNLOAD + Utils.FOLDER + File.separator + Utils.TRACK
+                        + File.separator + track.getTitle() + Utils.MP3));
+        track.setDownloadUrl(stringDir);
+        return track;
     }
 }

@@ -1,21 +1,23 @@
 package com.framgia.music_51.screen.home;
 
 import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.framgia.music_51.R;
 import com.framgia.music_51.databinding.ActivityMainBinding;
 import com.framgia.music_51.screen.ListMusicFragment;
+import com.framgia.music_51.screen.PermistoinUtils;
 import com.framgia.music_51.screen.person.PersonFragment;
 
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
     private ActivityMainBinding mBinding;
+    private PermistoinUtils mPermistoinUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mBinding.bottomNavigationView.setOnNavigationItemSelectedListener(this);
         addFragment(HomeFragment.TAG);
+        mPermistoinUtils = new PermistoinUtils(this);
+        mPermistoinUtils.requestPermissionImage();
     }
 
     @Override

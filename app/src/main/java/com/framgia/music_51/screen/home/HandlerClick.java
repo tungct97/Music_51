@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.framgia.music_51.data.model.MusicResponse;
 import com.framgia.music_51.data.model.Track;
+import com.framgia.music_51.screen.Utils;
 import com.framgia.music_51.screen.detail_genre.DetailGenreActivity;
 import com.framgia.music_51.screen.search.SearchActivity;
 import com.framgia.music_51.screen.play.PlayerActivity;
@@ -36,7 +37,7 @@ public class HandlerClick {
     public void onClickNavigatorPlayerScreen(Track track){
         mContext.startActivity(PlayerActivity.getIntent(mContext, track));
         Intent intentService = TrackService.getMusicServiceIntent(mContext,
-                mTracks.indexOf(track), mTracks);
+                mTracks.indexOf(track), mTracks, Utils.TYPE_REMOTE);
         mContext.startService(intentService);
     }
 }

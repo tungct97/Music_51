@@ -42,7 +42,6 @@
             android:text="@string/title_download"
             android:textSize="@dimen/sp_20"
             android:textStyle="bold"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recycler_favourite" />
 
@@ -51,9 +50,9 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_250"
             android:layout_marginTop="@dimen/dp_8"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_download"
-            tools:listitem="@layout/item_collection" />
+            app:layout_constraintTop_toBottomOf="@+id/text_download" />
     </android.support.constraint.ConstraintLayout>
 </layout>
