@@ -13,7 +13,13 @@ import com.framgia.music_51.data.resource.sql.TrackDataBase;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class DownloadViewModel extends AndroidViewModel {
     private TrackDataBase mTrackDataBase;
@@ -37,5 +43,17 @@ public class DownloadViewModel extends AndroidViewModel {
             mCompositeDisposable.isDisposed();
         }
     }
+
+    public void removeItemFavourite(final Track track) {
+        Disposable disposable = Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+                mRepository.removeFavorite(track); }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+        mCompositeDisposable.add(disposable);
+    }
+
 }
 

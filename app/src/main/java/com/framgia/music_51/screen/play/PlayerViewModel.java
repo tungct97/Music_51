@@ -45,6 +45,7 @@ public class PlayerViewModel extends AndroidViewModel {
     private TrackDataBase mTrackDataBase;
     private CompositeDisposable mCompositeDisposable;
 
+
     public PlayerViewModel(@NonNull Application application) {
         super(application);
         mCompositeDisposable = new CompositeDisposable();
@@ -81,6 +82,7 @@ public class PlayerViewModel extends AndroidViewModel {
     }
 
     public void setMaxSeekBar(int max) {
+        Log.d("TAG1", max + "");
         maxSeekBar.set(max);
     }
 

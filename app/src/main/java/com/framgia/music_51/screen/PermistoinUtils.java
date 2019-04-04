@@ -42,5 +42,4 @@ public class PermistoinUtils {
         ActivityCompat.requestPermissions(mActivity, permissions,
                 requestCode);
     }
-
 }

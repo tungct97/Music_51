@@ -63,6 +63,8 @@ public class DetailGenreActivity extends AppCompatActivity {
     }
 
     private void getData() {
+        mBinding.titlePlaylist.setText(BindingUtils.splitGenre(mGenre.getGenre()));
+        mBinding.textNumberPlaylist.setText("100 songs");
         mViewModel.getTracks(Utils.KIND, mGenre.getGenre(), mOffset).observe((LifecycleOwner) this, new Observer<MusicResponse>() {
             @Override
             public void onChanged(@Nullable MusicResponse musicResponse) {
@@ -70,12 +72,13 @@ public class DetailGenreActivity extends AppCompatActivity {
                     mIsFinish = true;
                     return;
                 }
+
                 mAdapter.removeLoadingIndicator();
                 mAdapter.setData(musicResponse.getTracks());
                 Glide.with(DetailGenreActivity.this)
                         .load(musicResponse.getCollections().get(INDEX).getTrack().getArtworkUrl())
                         .apply(new RequestOptions()
-                                .placeholder(R.drawable.image_default)).into(mBinding.imageGenre);
+                                .placeholder(R.drawable.image_default)).into(mBinding.ivPlaylist);
             }
         });
     }
@@ -83,7 +86,6 @@ public class DetailGenreActivity extends AppCompatActivity {
     private void initToolbar() {
         setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(BindingUtils.splitGenre(mGenre.getGenre()));
         mBinding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.framgia.music_51.screen.DateTimeUtils" />
+
+        <variable
+            name="track"
+            type="com.framgia.music_51.data.model.Search" />
+
+        <variable
+            name="handlerClick"
+            type="com.framgia.music_51.screen.searchplay.HandlerClick" />
+
+        <variable
+            name="viewModel"
+            type="com.framgia.music_51.screen.searchplay.PlaySearchViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".screen.searchplay.PlaySearch">
+
+        <ImageView
+            android:id="@+id/image_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            imageView=""
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_player"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:layout_marginTop="22dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/text_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:lines="1"
+                    android:text="@{track.getTitle}"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp_17"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_artist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:textColor="@color/color_white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_title" />
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/image_music_player"
+            android:layout_width="@dimen/dp_300"
+            android:layout_height="@dimen/dp_300"
+            android:layout_marginTop="@dimen/dp_100"
+            app:layout_constraintEnd_toEndOf="parent"
+            imageView="@{track.getArtworkUrl}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/button_heart"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_84"
+            android:background="@drawable/ic_heart"
+            android:layout_marginLeft="@dimen/dp_84"
+            android:layout_marginTop="@dimen/dp_48"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_music_player" />
+
+        <ImageView
+            android:id="@+id/button_download"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginLeft="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_32"
+            android:layout_marginRight="@dimen/dp_32"
+            android:background="@drawable/ic_download"
+            app:layout_constraintEnd_toStartOf="@+id/button_share"
+            app:layout_constraintStart_toEndOf="@+id/button_heart"
+            app:layout_constraintTop_toBottomOf="@+id/image_music_player" />
+
+        <ImageView
+            android:id="@+id/button_share"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_92"
+            android:layout_marginRight="@dimen/dp_92"
+            android:background="@drawable/ic_share"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_music_player" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:max="@{viewModel.maxSeekBar}"
+            android:progress="@{viewModel.positionSeekBar}"
+            android:layout_marginBottom="@dimen/dp_16"
+            app:layout_constraintBottom_toTopOf="@+id/button_play"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:text="@{DateTimeUtils.convertMinisecond(viewModel.positionSeekBar*1000)}"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:textColor="@color/color_white"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_end"
+            android:text="@{DateTimeUtils.convertMinisecond(track.getDuration)}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:textColor="@color/color_white"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/button_play"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_18"
+            android:background="@{viewModel.playState ? @drawable/ic_pause_mini :@drawable/ic_play_mini}"
+            android:onClick="@{() -> handlerClick.onPlayClick()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/button_next"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:onClick="@{() -> handlerClick.onNextClick()}"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:background="@drawable/ic_next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_play" />
+
+        <ImageView
+            android:id="@+id/button_loop"
+            android:layout_width="@dimen/dp_32"
+            imgResource="@{viewModel.loopRes}"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginBottom="@dimen/dp_26"
+            android:onClick="@{() -> handlerClick.onLoopClick()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_next" />
+
+        <ImageView
+            android:id="@+id/button_previous"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_24"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:background="@drawable/ic_previous"
+            android:onClick="@{() -> handlerClick.onPreviousClick()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_play" />
+
+        <ImageView
+            android:id="@+id/button_shuffle"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:background="@{viewModel.isShuffle ? @drawable/ic_shuffle_active :@drawable/ic_shuffle}"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:layout_marginRight="@dimen/dp_24"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:onClick="@{(shuffle) -> handlerClick.onClickShuffle(viewModel.isShuffle)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_previous" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

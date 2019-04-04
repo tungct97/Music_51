@@ -2,19 +2,26 @@ package com.framgia.music_51.data;
 
 import android.arch.lifecycle.LiveData;
 
+import com.framgia.music_51.data.model.Collection;
 import com.framgia.music_51.data.model.Search;
 import com.framgia.music_51.data.model.Track;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 public interface SearchDataSource {
     interface Remote {
-        void getSearch(int limit, Callback<List<Search>> callback);
+        Single<Collection> getSearchTrack(String q);
     }
 
     interface Local {
-        void saveSearch(Track track);
+        void saveSearch(Track search);
 
         LiveData<List<Track>> getHistory();
+
+        void removeHistory(Track search);
+
+        void deleteAllSearch();
     }
 }

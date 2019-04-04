@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ import com.framgia.music_51.databinding.FragmentPersonBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonFragment extends Fragment implements PersonAdapter.PersonHanlderClick {
+public class PersonFragment extends Fragment implements PersonAdapter.PersonHanlderClick, DownloadAdapter.DownloadHanlderClick {
     public static final String TAG = "PersonFragment";
     private FragmentPersonBinding mBinding;
     private PersonAdapter mAdapter;
@@ -50,7 +51,7 @@ public class PersonFragment extends Fragment implements PersonAdapter.PersonHanl
 
     private void initView() {
         mAdapter = new PersonAdapter(this);
-        mDownloadAdapter = new DownloadAdapter(getActivity());
+        mDownloadAdapter = new DownloadAdapter(getActivity(), this);
         mBinding.recyclerFavourite.setAdapter(mAdapter);
         mBinding.recyclerDownload.setAdapter(mDownloadAdapter);
     }
@@ -97,6 +98,21 @@ public class PersonFragment extends Fragment implements PersonAdapter.PersonHanl
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         mViewModel.removeItemFavourite(track);
+                    }
+                })
+                .setNegativeButton(R.string.title_no, null)
+                .show();
+    }
+
+    @Override
+    public void removeDownload(Track track) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(R.string.title_question)
+                .setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("TAG1", "Vào");
+                        mDownloadViewModel.removeItemFavourite(track);
                     }
                 })
                 .setNegativeButton(R.string.title_no, null)

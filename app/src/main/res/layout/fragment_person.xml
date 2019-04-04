@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-    <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -15,6 +13,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/color_black"
             android:text="@string/title_favourite"
             android:textSize="@dimen/sp_20"
             android:textStyle="bold"
@@ -29,8 +28,7 @@
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_favourite"
-            tools:listitem="@layout/item_collection" />
+            app:layout_constraintTop_toBottomOf="@+id/text_favourite" />
 
         <TextView
             android:id="@+id/text_download"
@@ -39,6 +37,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/color_black"
             android:text="@string/title_download"
             android:textSize="@dimen/sp_20"
             android:textStyle="bold"

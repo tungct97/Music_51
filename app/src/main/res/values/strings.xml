@@ -10,4 +10,13 @@
     <string name="title_question">Bạn có muốn xóa không?</string>
     <string name="msg_history_search">Lịch sử tìm kiếm</string>
     <string name="msg_delete">Xóa</string>
+    <string name="title_my_playlist">Danh sách bài hát</string>
+    <string name="image_info">Discover</string>
+    <string name="time_sleep">Time sleep</string>
+    <string name="off">Off</string>
+    <string name="_30">30\'</string>
+    <string name="_60">60\'</string>
+    <string name="_90">90\'</string>
+    <string name="custom">Custom</string>
+    <string name="action_confirm">Confirm</string>
 </resources>

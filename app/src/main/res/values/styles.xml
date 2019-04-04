@@ -11,4 +11,17 @@
     <style name="Search" parent="Base.Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
+
+    <style name="background_white" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">@color/color_white</item>
+    </style>
+
+    <style name="background_click" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
 </resources>

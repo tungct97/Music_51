@@ -4,13 +4,17 @@
     <data>
 
         <variable
+            name="handlerClick"
+            type="com.framgia.music_51.screen.search.SearchHandlerClick" />
+        <variable
             name="search"
-            type="com.framgia.music_51.data.model.Search" />
+            type="com.framgia.music_51.data.model.Track" />
     </data>
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
+        android:onClick="@{()-> handlerClick.onClickNavigatorSearchScreen(search)}"
         android:id="@+id/layout_list_search"
         android:layout_height="@dimen/dp_70">
 

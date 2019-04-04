@@ -49,6 +49,9 @@ public class Track extends Favourite implements Parcelable {
     @SerializedName("urn")
     @Expose
     private String mUrn;
+    @SerializedName("likes_count")
+    @Expose
+    private int mLikeCount;
 
     public Track() {
     }
@@ -61,6 +64,7 @@ public class Track extends Favourite implements Parcelable {
         mGenre = in.readString();
         mId = in.readInt();
         mTitle = in.readString();
+        mLikeCount = in.readInt();
         mUri = in.readString();
         mUrn = in.readString();
         mPublisherMetadata = in.readParcelable(PublisherMetadata.class.getClassLoader());
@@ -75,6 +79,7 @@ public class Track extends Favourite implements Parcelable {
         dest.writeString(mGenre);
         dest.writeInt(mId);
         dest.writeString(mTitle);
+        dest.writeInt(mLikeCount);
         dest.writeString(mUri);
         dest.writeString(mUrn);
         dest.writeParcelable((Parcelable) mPublisherMetadata, flags);
@@ -123,6 +128,14 @@ public class Track extends Favourite implements Parcelable {
 
     public int getDuration() {
         return mDuration;
+    }
+
+    public int getLikeCount() {
+        return mLikeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        mLikeCount = likeCount;
     }
 
     public void setDuration(int duration) {

@@ -3,7 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ScrollView
+    <data>
+
+        <variable
+            name="handlerClick"
+            type="com.framgia.music_51.screen.home.HandlerClick" />
+    </data>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -11,32 +18,56 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include
-                android:id="@+id/include"
-                layout="@layout/item_search"
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:onClick="@{() -> handlerClick.onClickNavigatorSearchScreen()}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_magnifier"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:id="@+id/text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/image_info"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_200"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
+            <ImageView
+                android:id="@+id/image_info"
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:contentDescription="@string/image_info"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/include" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_information" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_genre"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="16dp"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewPager" />
+                app:layout_constraintTop_toBottomOf="@+id/image_info" />
 
         </android.support.constraint.ConstraintLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </layout>

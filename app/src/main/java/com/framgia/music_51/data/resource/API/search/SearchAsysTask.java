@@ -9,40 +9,37 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class SearchAsysTask extends AsyncTask<String, Void, List<Search>> {
-    private Callback<List<Search>> mCallBack;
+public class SearchAsysTask extends AsyncTask<String, Void, ArrayList<Search>> {
+    private Callback mCallBack;
     private Exception mException;
+    private String mSearchKey;
 
-    public SearchAsysTask(Callback<List<Search>> callBack) {
+    public SearchAsysTask(Callback callBack) {
         mCallBack = callBack;
     }
 
     @Override
-    protected List<Search> doInBackground(String... strings) {
-        List<Search> searches = new ArrayList<>();
+    protected ArrayList<Search> doInBackground(String... strings) {
+        ArrayList<Search> tracks = new ArrayList<>();
         try {
-            SearchDataAPI movieDataAPI = new SearchDataAPI();
-            String json = movieDataAPI.getSearch(strings[0]);
-            searches = movieDataAPI.getSearchData(json);
-        } catch (JSONException e) {
+            String json = SearchDataAPI.getJSONFromAPI(strings[0]);
+            tracks = SearchDataAPI.getTrackSearch(json);
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
             mException = e;
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return searches;
+        return tracks;
     }
 
     @Override
-    protected void onPostExecute(List<Search> searches) {
-        super.onPostExecute(searches);
+    protected void onPostExecute(ArrayList<Search> tracks) {
+        super.onPostExecute(tracks);
         if (mCallBack == null) {
             return;
         }
         if (mException == null) {
-            mCallBack.getDataSuccess(searches);
+            mCallBack.getDataSuccess(tracks);
         } else {
             mCallBack.getDataFail(mException);
         }

@@ -8,66 +8,60 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@Entity
+@Entity(tableName = "search")
 public class Search implements Parcelable {
 
-    private String mArtworkUrl;
-    private Integer mDuration;
-    private String mGenre;
-    @PrimaryKey(autoGenerate = true)
-    private Integer mId;
-    private String mKind;
-    private String mLabelName;
-    private String mLastModified;
-    private String mTagList;
+    @PrimaryKey
+    private int mId;
+    private int mDuration;
     private String mTitle;
-    private String mUri;
-    private String mUrn;
-    private Integer mUserId;
-
-    public Search(JSONObject jsonObject) throws JSONException {
-        mArtworkUrl = jsonObject.getString(JSONKey.ARTWORK_URL);
-        mDuration = jsonObject.getInt(JSONKey.DURATION);
-        mGenre = jsonObject.getString(JSONKey.GENRE);
-        mId = jsonObject.getInt(JSONKey.ID);
-        mKind = jsonObject.getString(JSONKey.KIND);
-        mLabelName = jsonObject.getString(JSONKey.LABLE_NAME);
-        mLastModified = jsonObject.getString(JSONKey.LAST_MODIFIED);
-        mTitle = jsonObject.getString(JSONKey.TITLE);
-        mUri = jsonObject.getString(JSONKey.URI);
-        mUrn = jsonObject.getString(JSONKey.URN);
-        mUserId = jsonObject.getInt(JSONKey.USER_ID);
-        mTagList = jsonObject.getString(JSONKey.TAG_LIST);
-    }
+    private String mArtworkUrl;
+    private String mGenre;
+    private String mDownloadURL;
+    private String mArtist;
+    private boolean mDownloadable;
+    private boolean mDownloaded;
+    private int mTypeTrack;
 
     public Search() {
     }
 
+    public Search(JSONObject jsonObject) throws JSONException {
+        this.mId = jsonObject.getInt(TrackJSON.ID);
+        this.mTitle = jsonObject.getString(TrackJSON.TITLE);
+        this.mArtworkUrl = jsonObject.getString(TrackJSON.ARTWORK_URL);
+        this.mDuration = jsonObject.getInt(TrackJSON.DURATION);
+        this.mGenre = jsonObject.getString(TrackJSON.GENRE);
+        this.mDownloadable = jsonObject.getBoolean(TrackJSON.DOWNLOADABLE);
+        this.mDownloadURL = jsonObject.getString(TrackJSON.DOWNLOAD_URL);
+        this.mArtist = jsonObject.getJSONObject(TrackJSON.USER)
+                .getString(TrackJSON.USER_NAME);
+    }
+
+    private Search(TrackBuilder trackBuilder) {
+        this.mId = trackBuilder.mId;
+        this.mTitle = trackBuilder.mTitle;
+        this.mArtworkUrl = trackBuilder.mArtworkUrl;
+        this.mDuration = trackBuilder.mDuration;
+        this.mGenre = trackBuilder.mGenre;
+        this.mDownloadable = trackBuilder.mDownloadable;
+        this.mDownloaded = trackBuilder.mDownloaded;
+        this.mDownloadURL = trackBuilder.mDownloadURL;
+        this.mArtist = trackBuilder.mArtist;
+        this.mTypeTrack = trackBuilder.mTypeTrack;
+    }
+
     protected Search(Parcel in) {
-        mArtworkUrl = in.readString();
-        if (in.readByte() == 0) {
-            mDuration = null;
-        } else {
-            mDuration = in.readInt();
-        }
-        mGenre = in.readString();
-        if (in.readByte() == 0) {
-            mId = null;
-        } else {
-            mId = in.readInt();
-        }
-        mKind = in.readString();
-        mLabelName = in.readString();
-        mLastModified = in.readString();
-        mTagList = in.readString();
+        mId = in.readInt();
+        mDuration = in.readInt();
         mTitle = in.readString();
-        mUri = in.readString();
-        mUrn = in.readString();
-        if (in.readByte() == 0) {
-            mUserId = null;
-        } else {
-            mUserId = in.readInt();
-        }
+        mArtworkUrl = in.readString();
+        mGenre = in.readString();
+        mDownloadURL = in.readString();
+        mArtist = in.readString();
+        mDownloadable = in.readByte() != 0;
+        mDownloaded = in.readByte() != 0;
+        mTypeTrack = in.readInt();
     }
 
     public static final Creator<Search> CREATOR = new Creator<Search>() {
@@ -82,6 +76,109 @@ public class Search implements Parcelable {
         }
     };
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mId);
+        dest.writeInt(mDuration);
+        dest.writeString(mTitle);
+        dest.writeString(mArtworkUrl);
+        dest.writeString(mGenre);
+        dest.writeString(mDownloadURL);
+        dest.writeString(mArtist);
+        dest.writeByte((byte) (mDownloadable ? 1 : 0));
+        dest.writeByte((byte) (mDownloaded ? 1 : 0));
+        dest.writeInt(mTypeTrack);
+    }
+
+
+    public static class TrackBuilder {
+        private int mId;
+        private String mTitle;
+        private String mArtworkUrl;
+        private int mDuration;
+        private String mGenre;
+        private boolean mDownloadable;
+        private boolean mDownloaded;
+        private String mDownloadURL;
+        private String mArtist;
+        private int mTypeTrack;
+
+        public TrackBuilder setId(int id) {
+            mId = id;
+            return this;
+        }
+
+        public TrackBuilder setTitle(String title) {
+            mTitle = title;
+            return this;
+        }
+
+        public TrackBuilder setArtworkUrl(String artworkUrl) {
+            mArtworkUrl = artworkUrl;
+            return this;
+        }
+
+        public TrackBuilder setDuration(int duration) {
+            mDuration = duration;
+            return this;
+        }
+
+        public TrackBuilder setGenre(String genre) {
+            mGenre = genre;
+            return this;
+        }
+
+        public TrackBuilder setDownloadable(boolean downloadable) {
+            mDownloadable = downloadable;
+            return this;
+        }
+
+        public TrackBuilder setDownloadURL(String downloadURL) {
+            mDownloadURL = downloadURL;
+            return this;
+        }
+
+        public TrackBuilder setArtist(String artist) {
+            mArtist = artist;
+            return this;
+        }
+
+        public TrackBuilder setDownloaded(boolean downloaded) {
+            mDownloaded = downloaded;
+            return this;
+        }
+
+        public TrackBuilder setTypeTrack(int typeTrack) {
+            mTypeTrack = typeTrack;
+            return this;
+        }
+
+        public Search build() {
+            return new Search(this);
+        }
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
     public String getArtworkUrl() {
         return mArtworkUrl;
     }
@@ -90,11 +187,11 @@ public class Search implements Parcelable {
         mArtworkUrl = artworkUrl;
     }
 
-    public Integer getDuration() {
+    public int getDuration() {
         return mDuration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(int duration) {
         mDuration = duration;
     }
 
@@ -106,127 +203,59 @@ public class Search implements Parcelable {
         mGenre = genre;
     }
 
-    public Integer getId() {
-        return mId;
+    public boolean isDownloadable() {
+        return mDownloadable;
     }
 
-    public void setId(Integer id) {
-        mId = id;
+    public void setDownloadable(boolean downloadable) {
+        mDownloadable = downloadable;
     }
 
-    public String getKind() {
-        return mKind;
+    public String getDownloadURL() {
+        return mDownloadURL;
     }
 
-    public void setKind(String kind) {
-        mKind = kind;
+    public void setDownloadURL(String downloadURL) {
+        mDownloadURL = downloadURL;
     }
 
-    public String getLabelName() {
-        return mLabelName;
+    public String getArtist() {
+        return mArtist;
     }
 
-    public void setLabelName(String labelName) {
-        mLabelName = labelName;
+    public void setArtist(String artist) {
+        mArtist = artist;
     }
 
-    public String getLastModified() {
-        return mLastModified;
+    public boolean isDownloaded() {
+        return mDownloaded;
     }
 
-    public void setLastModified(String lastModified) {
-        mLastModified = lastModified;
+    public void setDownloaded(boolean downloaded) {
+        mDownloaded = downloaded;
     }
 
-    public String getTagList() {
-        return mTagList;
+    public int getTypeTrack() {
+        return mTypeTrack;
     }
 
-    public void setTagList(String tagList) {
-        mTagList = tagList;
+    public void setTypeTrack(int typeTrack) {
+        mTypeTrack = typeTrack;
     }
 
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public void setTitle(String title) {
-        mTitle = title;
-    }
-
-    public String getUri() {
-        return mUri;
-    }
-
-    public void setUri(String uri) {
-        mUri = uri;
-    }
-
-    public String getUrn() {
-        return mUrn;
-    }
-
-    public void setUrn(String urn) {
-        mUrn = urn;
-    }
-
-    public Integer getUserId() {
-        return mUserId;
-    }
-
-    public void setUserId(Integer userId) {
-        mUserId = userId;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mArtworkUrl);
-        if (mDuration == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(mDuration);
-        }
-        dest.writeString(mGenre);
-        if (mId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(mId);
-        }
-        dest.writeString(mKind);
-        dest.writeString(mLabelName);
-        dest.writeString(mLastModified);
-        dest.writeString(mTagList);
-        dest.writeString(mTitle);
-        dest.writeString(mUri);
-        dest.writeString(mUrn);
-        if (mUserId == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(mUserId);
-        }
-    }
-
-    public static class JSONKey {
+    public class TrackJSON {
+        private static final String ID = "id";
+        private static final String TITLE = "title";
+        private static final String URI = "url";
+        private static final String ARTWORK_URL = "artwork_url";
+        private static final String DURATION = "duration";
+        private static final String GENRE = "genre";
+        private static final String DOWNLOADABLE = "downloadable";
+        private static final String DOWNLOAD_URL = "download_url";
+        private static final String USER_NAME = "username";
+        private static final String USER = "user";
         public static final String COLLECTION = "collection";
-        public static final String ARTWORK_URL = "artwork_url";
-        public static final String DURATION = "duration";
-        public static final String GENRE = "genre";
-        public static final String ID = "id";
-        public static final String KIND = "kind";
-        public static final String LABLE_NAME = "label_name";
-        public static final String LAST_MODIFIED = "last_modified";
-        public static final String TAG_LIST = "tag_list";
-        public static final String TITLE = "title";
-        public static final String URI = "uri";
-        public static final String URN = "urn";
-        public static final String USER_ID = "user_id";
+        public static final String TRACK = "track";
     }
+
 }

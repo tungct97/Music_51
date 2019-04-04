@@ -9,12 +9,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 
 import com.framgia.music_51.R;
+import com.framgia.music_51.data.model.Collection;
 import com.framgia.music_51.data.model.Search;
+import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.databinding.ActivitySearchBinding;
 
 import java.util.List;
@@ -33,44 +36,51 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_search);
-        initView();
+        mBinding.setHanldeClick(new SearchHandlerClick(this));
         initViewModel();
+        initView();
     }
 
     private void initView() {
-        mAdapter = new SearchAdapter();
-        mHistoryAdapter = new HistoryAdapter();
+        mAdapter = new SearchAdapter(this, mViewModel);
+        mHistoryAdapter = new HistoryAdapter(this, mViewModel);
         mBinding.recyclerHistory.setAdapter(mHistoryAdapter);
         mBinding.recyclerSearch.setAdapter(mAdapter);
+        getHistory();
     }
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
-        getData();
+        mBinding.searchView.setQueryHint("Nhập tên bài hát");
+        mBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                mAdapter.getFilter().filter(s);
+                getData(s);
+                return true ;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
     }
 
-    private void getData() {
-        mViewModel.getQuery(20).observe(this, new Observer<List<Search>>() {
+    private void getHistory() {
+        mViewModel.getHistory().observe(this, new Observer<List<Track>>() {
             @Override
-            public void onChanged(@Nullable List<Search> searches) {
-                mBinding.searchView.setActivated(true);
-                mBinding.searchView.setQueryHint("Type your keyword here");
-                mBinding.searchView.onActionViewExpanded();
-                mBinding.searchView.setIconified(false);
-                mBinding.searchView.clearFocus();
-                mBinding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String s) {
-                        return false;
-                    }
+            public void onChanged(@Nullable List<Track> searches) {
+                mHistoryAdapter.setData(searches);
+            }
+        });
+    }
 
-                    @Override
-                    public boolean onQueryTextChange(String s) {
-                        mAdapter.getFilter().filter(s);
-                        mAdapter.setData(searches);
-                        return false;
-                    }
-                });
+    private void getData(String s) {
+        mViewModel.getTrack(s).observe(this, new Observer<Collection>() {
+            @Override
+            public void onChanged(@Nullable Collection collection) {
+               mAdapter.setData(collection.getCollection());
             }
         });
     }
@@ -81,19 +91,20 @@ public class SearchActivity extends AppCompatActivity {
         MenuItem searchItem = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                mAdapter.getFilter().filter(newText);
-                return false;
-            }
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                Log.d("ducanh123", "onQueryTextChange: ");
+//                getData(newText);
+//
+//                return false;
+//            }
+//        });
         return true;
     }
 }

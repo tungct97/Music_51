@@ -4,13 +4,17 @@
     <data>
 
         <variable
+            name="hanlderClick"
+            type="com.framgia.music_51.screen.search.SearchHandlerClick" />
+        <variable
             name="search"
-            type="com.framgia.music_51.data.model.Search" />
+            type="com.framgia.music_51.data.model.Track" />
     </data>
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/constraint_history_search"
+        android:onClick="@{()->hanlderClick.onClickNavigatorScreen(search)}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_10">
@@ -42,6 +46,7 @@
             android:id="@+id/image_delete_recent_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{()->hanlderClick.deleteHistory(search)}"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_close"
             app:layout_constraintEnd_toEndOf="parent" />

@@ -1,36 +1,31 @@
 package com.framgia.music_51.data.resource;
 
-import com.framgia.music_51.BuildConfig;
-import com.framgia.music_51.data.Callback;
 import com.framgia.music_51.data.SearchDataSource;
-import com.framgia.music_51.data.model.Search;
-import com.framgia.music_51.data.resource.API.search.SearchAsysTask;
-import com.framgia.music_51.screen.Utils;
+import com.framgia.music_51.data.model.Collection;
+import com.framgia.music_51.data.resource.API.ApiRequest;
+import com.framgia.music_51.data.resource.API.SoundCloudService;
 
-import java.util.List;
+import io.reactivex.Single;
 
 public class SearchRemoteDataSource implements SearchDataSource.Remote {
     private static SearchRemoteDataSource sInstance;
+    private ApiRequest mUtils;
 
-    private SearchRemoteDataSource() {
+    private SearchRemoteDataSource(ApiRequest utils) {
+        mUtils = utils;
     }
 
     public static SearchRemoteDataSource getInstance() {
         if (sInstance == null) {
             synchronized (SearchRemoteDataSource.class) {
-                sInstance = new SearchRemoteDataSource();
+                sInstance = new SearchRemoteDataSource(SoundCloudService.getGenreService());
             }
         }
         return sInstance;
     }
 
-    private void getTrackBySearch(int limit, Callback callBack) {
-        new SearchAsysTask(callBack).execute(Utils.URL);
-    }
-
-
     @Override
-    public void getSearch(int limit, Callback<List<Search>> callback) {
-        getTrackBySearch(limit, callback);
+    public Single<Collection> getSearchTrack(String q) {
+        return mUtils.getSearch(q);
     }
 }

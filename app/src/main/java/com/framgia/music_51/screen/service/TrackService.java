@@ -9,24 +9,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.NotificationTarget;
 import com.framgia.music_51.R;
 import com.framgia.music_51.data.model.Track;
+import com.framgia.music_51.screen.DateTimeUtils;
 import com.framgia.music_51.screen.play.MediaListener;
 import com.framgia.music_51.screen.play.OnUpdateUIListener;
 import com.framgia.music_51.screen.play.PlayerActivity;
+import com.framgia.music_51.screen.timer.ControlMusic;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackService extends Service implements MediaListener {
+public class TrackService extends Service implements MediaListener, ControlMusic {
     private static final String ACTION_NEXT_TRACK = "ACTION_NEXT_TRACK";
     private static final String ACTION_PREVIOUS_TRACK = "ACTION_PREVIOUS_TRACK";
     private static final String START_FOREGROUND_SERVICE = "START_FOREGROUND_SERVICE";
@@ -41,6 +46,7 @@ public class TrackService extends Service implements MediaListener {
     private static final int REQUEST_CODE_CLEAR = 4;
     private static final int ID_NOTIFICATION = 111;
     private static final String EXTRA_TRACK_TYPE = "EXTRA_TRACK_TYPE";
+    private static final String EXTRA_LIST = "EXTRA_LIST";
     private final IBinder mIBinder = new TrackBinder();
     private TrackManager mTrackManager;
     private int mPosition;
@@ -48,6 +54,8 @@ public class TrackService extends Service implements MediaListener {
     private Notification mNotification;
     private int mTypeTrack;
     private RemoteViews mRemoteViews;
+    private CountDownTimer mCountDownTimer;
+    private OnMiniPlayerChangeListener mOnMiniPlayerChangeListener;
 
     public static Intent getMusicServiceIntent(Context context, int position, List<Track> tracks, int type) {
         Intent intent = new Intent(context, TrackService.class);
@@ -56,6 +64,11 @@ public class TrackService extends Service implements MediaListener {
         intent.putParcelableArrayListExtra(EXTRA_LIST_TRACK, (ArrayList<? extends Parcelable>) tracks);
         intent.setAction(START_FOREGROUND_SERVICE);
         return intent;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
     }
 
     @Override
@@ -87,10 +100,24 @@ public class TrackService extends Service implements MediaListener {
     }
 
     private void setData(List<Track> tracks) {
+        mOnMiniPlayerChangeListener.onTrackChange(tracks.get(mPosition));
         mTrackManager.setData(tracks);
-        createNotification(getCurrentTrack().getTitle(),
-                getCurrentTrack().getPublisherMetadata().getArtist(),
-                getCurrentTrack().getArtworkUrl());
+        if (tracks.get(mPosition).getPublisherMetadata() == null) {
+            createNotification(getCurrentTrack().getTitle(),
+                    "Unknown",
+                    getCurrentTrack().getArtworkUrl());
+        } else {
+            createNotification(getCurrentTrack().getTitle(),
+                    getCurrentTrack().getPublisherMetadata().getArtist(),
+                    getCurrentTrack().getArtworkUrl());
+        }
+    }
+
+    public void setOnChangePlayNow(MediaListener.OnChangePlayNow onChangePlayNow) {
+        if (mTrackManager == null) {
+            return;
+        }
+        mTrackManager.setOnChangePlayNow(onChangePlayNow);
     }
 
     @Override
@@ -111,12 +138,14 @@ public class TrackService extends Service implements MediaListener {
     @Override
     public void play() {
         mTrackManager.play();
+        mOnMiniPlayerChangeListener.onMediaStateChange(mTrackManager.isPlaying());
         updateNotificationState();
     }
 
     @Override
     public void next() {
         mTrackManager.next();
+        mOnMiniPlayerChangeListener.onTrackChange(mTrackManager.getTrackCurrent());
         updateNotificationChangeTrack(mTrackManager.getTrackCurrent());
     }
 
@@ -148,7 +177,20 @@ public class TrackService extends Service implements MediaListener {
 
     @Override
     public Track getCurrentTrack() {
-        return mTracks.get(mPosition);
+;        return mTracks.get(mPosition);
+    }
+
+    @Override
+    public int possotion() {
+        return mTrackManager.possition();
+    }
+
+    @Override
+    public List<Track> getListTrack() {
+        if (mTrackManager == null) {
+            return null;
+        }
+        return mTrackManager.getTracks();
     }
 
     @Override
@@ -199,7 +241,7 @@ public class TrackService extends Service implements MediaListener {
         Notification.Builder notificationBuilder =
                 new Notification.Builder(getApplicationContext());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            mNotification = notificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
+            mNotification = notificationBuilder.setSmallIcon(R.drawable.ic_music_selected)
                     .setContentIntent(pendingIntent)
                     .setContent(mRemoteViews)
                     .setDefaults(Notification.FLAG_NO_CLEAR)
@@ -299,6 +341,53 @@ public class TrackService extends Service implements MediaListener {
 
     public void setUiListener(OnUpdateUIListener listener) {
         mTrackManager.setUiListener(listener);
+    }
+
+    @Override
+    public void countDown(TextView textTime, int time) {
+        if (mCountDownTimer == null) {
+            mCountDownTimer = new CountDownTimer(time, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    Log.d("TAG1", DateTimeUtils.convertMinisecond(millisUntilFinished));
+                }
+
+                @Override
+                public void onFinish() {
+                    mTrackManager.play();
+                }
+            };
+        } else {
+            mCountDownTimer.cancel();
+            mCountDownTimer = new CountDownTimer(time, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    Log.d("TAG1", DateTimeUtils.convertMinisecond(millisUntilFinished));
+                }
+
+                @Override
+                public void onFinish() {
+                    mTrackManager.play();
+                }
+            };
+        }
+        mCountDownTimer.start();
+    }
+
+    public void setOnChangeButtonMediaPlayer(MediaListener.OnChangeButtonMediaPlayer onChangeButtonMediaPlayer) {
+        if (mTrackManager == null) {
+            return;
+        }
+        mTrackManager.setOnChangeButtonMediaPlayer(onChangeButtonMediaPlayer);
+    }
+
+    public void setMiniPlayer(OnMiniPlayerChangeListener onMiniPlayerChangeListener) {
+//        if (mTrackManager == null) {
+//            return;
+//        }
+//        mTrackManager.setMiniPlayer(onMiniPlayerChangeListener);
+        Log.d("ducanh123", "setMiniPlayer: ");
+        mOnMiniPlayerChangeListener = onMiniPlayerChangeListener;
     }
 
     public class TrackBinder extends Binder {

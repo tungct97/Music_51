@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:fresco="http://schemas.android.com/tools"
+        android:id="@+id/constraint_mini_play"
+        style="@style/background_white"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_53"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/image_all_mini"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/gradient1" />
+
+        <ImageView
+            android:id="@+id/image_mini"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_5"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            fresco:roundAsCircle="true"
+            fresco:roundBottomEnd="false"
+            fresco:roundBottomStart="false"
+            fresco:roundWithOverlayColor="@color/blue"
+            android:layout_marginLeft="@dimen/dp_5" />
+
+        <TextView
+            android:id="@+id/title_mini_play"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_5"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/image_play"
+            app:layout_constraintStart_toEndOf="@+id/image_mini"
+            app:layout_constraintTop_toTopOf="@+id/image_mini"
+            android:layout_marginLeft="@dimen/dp_5" />
+
+        <TextView
+            android:id="@+id/auth_mini_play"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_5"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toStartOf="@+id/image_play"
+            app:layout_constraintStart_toEndOf="@+id/image_mini"
+            app:layout_constraintTop_toBottomOf="@+id/title_mini_play"
+            android:layout_marginLeft="@dimen/dp_5" />
+
+        <ImageView
+            android:id="@+id/image_play"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_pause_mini"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/image_next"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/image_next"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:src="@drawable/ic_skip_next_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <SeekBar
+            android:id="@+id/sb_mini"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

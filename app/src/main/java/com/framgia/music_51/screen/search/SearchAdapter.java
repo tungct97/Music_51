@@ -1,5 +1,6 @@
 package com.framgia.music_51.screen.search;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,29 +11,34 @@ import android.widget.Filterable;
 
 import com.framgia.music_51.R;
 import com.framgia.music_51.data.model.Search;
+import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.databinding.ItemListSearchBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
-    public List<Search> mTracks;
-    private List<Search> mTracksFull;
+    public List<Track> mTracks;
+    private List<Track> mTracksFull;
     private ValueFilter mValueFilter;
+    private Context mContext;
+    private SearchViewModel mViewModel;
 
-    public SearchAdapter() {
+    public SearchAdapter(Context context, SearchViewModel searchViewModel) {
+        mContext = context;
+        mViewModel = searchViewModel;
         mTracks = new ArrayList<>();
         mTracksFull = new ArrayList<>();
+
     }
 
-    public void setData(List<Search> searches) {
+    public void setData(List<Track> searches) {
         if (searches == null) {
             return;
         }
         mTracks.addAll(searches);
-        notifyItemRangeChanged(mTracks.size(), searches.size());
+        notifyDataSetChanged();
     }
-
 
     @Override
     public Filter getFilter() {
@@ -48,7 +54,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             FilterResults results = new FilterResults();
 
             if (constraint != null && constraint.length() > 0) {
-                List<Search> filterList = new ArrayList<>();
+                List<Track> filterList = new ArrayList<>();
                 for (int i = 0; i < mTracksFull.size(); i++) {
                     if ((mTracksFull.get(i).getTitle().toUpperCase()).contains(constraint.toString().toUpperCase())) {
                         filterList.add(mTracksFull.get(i));
@@ -67,10 +73,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         @Override
         protected void publishResults(CharSequence constraint,
                                       FilterResults results) {
-            mTracks = (List<Search>) results.values;
+            mTracks = (List<Track>) results.values;
             notifyDataSetChanged();
         }
-
     }
 
     @NonNull
@@ -84,7 +89,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder searchViewHolder, int i) {
-        searchViewHolder.setBinding(mTracks.get(i));
+        searchViewHolder.setBinding(mContext, mTracks.get(i));
     }
 
     @Override
@@ -100,8 +105,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             mBinding = binding;
         }
 
-        public void setBinding(Search search) {
+        public void setBinding(Context context, Track search) {
             mBinding.setSearch(search);
+            mBinding.setHandlerClick(new SearchHandlerClick(context, mTracks, mViewModel));
         }
     }
 }

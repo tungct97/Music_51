@@ -9,11 +9,11 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.framgia.music_51.BuildConfig;
-import com.framgia.music_51.R;
 import com.framgia.music_51.data.model.LoopType;
 import com.framgia.music_51.data.model.PlayMode;
 import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.screen.Utils;
+import com.framgia.music_51.screen.play.MediaListener;
 import com.framgia.music_51.screen.play.OnUpdateUIListener;
 
 import java.io.File;
@@ -28,7 +28,7 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
     private static String BASE_URL_PLAY_MUSIC = "http://api.soundcloud.com/tracks/";
     private static String URL = "/stream?client_id=";
-    private static MediaPlayer mMediaPlayer;
+    private MediaPlayer mMediaPlayer;
     private List<Track> mTracks;
     private List<Track> mUnShuffleTracks;
     private Context mContext;
@@ -37,8 +37,11 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
     private int mPosition;
     private PlayMode mPlayMode;
     private int mTypeTrack;
+    private MediaListener.OnChangePlayNow mOnChangePlayNow;
+    private MediaListener.OnChangeButtonMediaPlayer mOnChangeButtonMediaPlayer;
+    private MediaListener.OnMiniPlayerChangeListener mOMiniPlayerChangeListener;
 
-    public TrackManager(Context context, ArrayList<Track> tracks, int position, int type) {
+    TrackManager(Context context, ArrayList<Track> tracks, int position, int type) {
         mContext = context;
         mTypeTrack = type;
         mTracks = tracks;
@@ -97,6 +100,7 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
     }
 
     public void setData(List<Track> tracks) {
+//        mOMiniPlayerChangeListener.onTrackChange(tracks.get(mPosition));
         try {
             if (mMediaPlayer.isPlaying() || mMediaPlayer != null) {
                 destroyMediaPlayer();
@@ -107,7 +111,9 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.prepareAsync();
             mMediaPlayer.setOnPreparedListener(this);
+            mMediaPlayer.setOnErrorListener(this);
             mMediaPlayer.setOnCompletionListener(this);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -120,15 +126,23 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
         mMediaPlayer = null;
     }
 
+
     public void setUiListener(OnUpdateUIListener listener) {
         mListener = listener;
     }
 
     public void play() {
+        Track track = mTracks.get(mPosition);
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
         } else {
             mMediaPlayer.start();
+        }
+        if (mOnChangePlayNow != null) {
+            mOnChangePlayNow.onTrackChange(track, mPosition);
+        }
+        if (mOnChangeButtonMediaPlayer != null) {
+            mOnChangeButtonMediaPlayer.onTrackChange(track);
         }
         mListener.updateStateButton(isPlaying());
     }
@@ -148,6 +162,7 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
     }
 
     public void next() {
+
         if (mPosition == mTracks.size() - 1) {
             if (mPlayMode.getLoopMode() == LoopType.LOOP_ALL) {
                 mPosition = 0;
@@ -175,6 +190,10 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
         setData(mTracks);
     }
 
+    public List<Track> getTracks() {
+        return mTracks;
+    }
+
     public void loopOne() {
         mMediaPlayer.setLooping(true);
         mPlayMode.setLoopMode(LoopType.LOOP_ONE);
@@ -196,6 +215,10 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
         return mTracks.get(mPosition);
     }
 
+    public int possition() {
+        return mPosition;
+    }
+
     public void seekTo(int position) {
         mMediaPlayer.seekTo(position);
     }
@@ -205,6 +228,9 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
     }
 
     public int getCurrentPosition() {
+        if (mMediaPlayer == null) {
+            return 0;
+        }
         return mMediaPlayer.getCurrentPosition();
     }
 
@@ -218,8 +244,10 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
 
     public void like(boolean like) {
         if (like) {
+            Log.d("TAG1","1");
             mListener.onLikeStateChange(false);
         } else {
+            Log.d("TAG1","2");
             mListener.onLikeStateChange(true);
         }
     }
@@ -283,4 +311,15 @@ public class TrackManager implements MediaPlayer.OnCompletionListener,
         downloadManager.enqueue(request);
     }
 
+    public void setOnChangePlayNow(MediaListener.OnChangePlayNow onChangePlayNow) {
+        mOnChangePlayNow = onChangePlayNow;
+    }
+
+    public void setOnChangeButtonMediaPlayer(MediaListener.OnChangeButtonMediaPlayer onChangeButtonMediaPlayer) {
+        mOnChangeButtonMediaPlayer = onChangeButtonMediaPlayer;
+    }
+
+    public void setMiniPlayer(MediaListener.OnMiniPlayerChangeListener onMiniPlayerChangeListener) {
+        mOMiniPlayerChangeListener = onMiniPlayerChangeListener;
+    }
 }

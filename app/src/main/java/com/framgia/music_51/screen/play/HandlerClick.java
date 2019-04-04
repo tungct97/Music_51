@@ -1,6 +1,7 @@
 package com.framgia.music_51.screen.play;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.framgia.music_51.data.model.LoopType;
 import com.framgia.music_51.data.model.PlayMode;
@@ -76,6 +77,7 @@ public class HandlerClick {
     }
 
     public void isFavorite(Track track, boolean like) {
+        Log.d("TAG2", !like+"");
         mViewModel.isFavourite(track, !like);
         mMediaListener.favouriteTrack(!like);
     }

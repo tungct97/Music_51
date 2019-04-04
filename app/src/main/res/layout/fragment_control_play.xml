@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="com.framgia.music_51.screen.DateTimeUtils" />
+
+        <variable
+            name="track"
+            type="com.framgia.music_51.data.model.Track" />
+
+        <variable
+            name="handlerClick"
+            type="com.framgia.music_51.screen.play.HandlerClick" />
+
+        <variable
+            name="viewModel"
+            type="com.framgia.music_51.screen.play.PlayerViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/image_music_player"
+            imageView="@{track.getArtworkUrl}"
+            android:layout_width="@dimen/dp_300"
+            android:layout_height="@dimen/dp_300"
+            android:layout_marginTop="@dimen/dp_50"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/button_heart"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_84"
+            android:layout_marginLeft="@dimen/dp_84"
+            android:layout_marginTop="@dimen/dp_48"
+            android:background="@{viewModel.isLike ? @drawable/ic_heart_1 :@drawable/ic_heart}"
+            android:onClick="@{(like) -> handlerClick.isFavorite(track, viewModel.isLike)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_music_player" />
+
+        <ImageView
+            android:id="@+id/button_download"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginLeft="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_32"
+            android:layout_marginRight="@dimen/dp_32"
+            android:background="@drawable/ic_download"
+            android:onClick="@{()->handlerClick.onDownloadClick(track)}"
+            app:layout_constraintEnd_toStartOf="@+id/button_share"
+            app:layout_constraintStart_toEndOf="@+id/button_heart"
+            app:layout_constraintTop_toBottomOf="@+id/image_music_player" />
+
+        <ImageView
+            android:id="@+id/button_share"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_92"
+            android:layout_marginRight="@dimen/dp_92"
+            android:background="@drawable/ic_share"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_music_player" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

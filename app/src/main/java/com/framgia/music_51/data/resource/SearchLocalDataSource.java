@@ -3,6 +3,7 @@ package com.framgia.music_51.data.resource;
 import android.arch.lifecycle.LiveData;
 
 import com.framgia.music_51.data.SearchDataSource;
+import com.framgia.music_51.data.model.Search;
 import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.data.resource.sql.TrackDao;
 
@@ -26,8 +27,8 @@ public class SearchLocalDataSource implements SearchDataSource.Local {
     }
 
     @Override
-    public void saveSearch(Track track) {
-        mDao.saveHistory(track);
+    public void saveSearch(Track search) {
+        mDao.addHistory(search);
     }
 
     @Override
@@ -35,5 +36,13 @@ public class SearchLocalDataSource implements SearchDataSource.Local {
       return mDao.getHistory();
     }
 
+    @Override
+    public void removeHistory(Track search) {
+        mDao.removeHistory(search);
+    }
 
+    @Override
+    public void deleteAllSearch() {
+        mDao.deleteAllSearch();
+    }
 }

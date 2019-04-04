@@ -1,5 +1,6 @@
 package com.framgia.music_51.screen.play;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
@@ -13,14 +14,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.SeekBar;
 
 import com.bumptech.glide.Glide;
@@ -29,15 +32,23 @@ import com.framgia.music_51.R;
 import com.framgia.music_51.data.model.PlayMode;
 import com.framgia.music_51.data.model.Track;
 import com.framgia.music_51.databinding.ActivityPlayerBinding;
+import com.framgia.music_51.screen.Utils;
+import com.framgia.music_51.screen.play.fragment.PlayControlFragment;
+import com.framgia.music_51.screen.play.fragment.PlayNowFragment;
 import com.framgia.music_51.screen.service.TrackService;
+import com.framgia.music_51.screen.timer.TimerFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListener, SeekBar.OnSeekBarChangeListener {
-    private static final String EXTRA_TRACK = "EXTRA_TRACK";
-    private static final String BUNDLE_TRACK = "BUNDLE_TRACK";
+    public static final String EXTRA_TRACK = "EXTRA_TRACK";
+    public static final String BUNDLE_TRACK = "BUNDLE_TRACK";
+    private static final int NUM_PAGES = 2;
     private static final int CONVERT_MINISECOND = 1000;
     private PlayMode mPlayMode;
     private ActivityPlayerBinding mBinding;
@@ -49,6 +60,7 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
     private MediaListener mListener;
     private PlayerViewModel mViewModel;
     private Runnable mRunnable;
+    private List<Fragment> mFragments;
 
     public static Intent getIntent(Context context, Track track) {
         Bundle bundle = new Bundle();
@@ -81,6 +93,7 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_player);
+        mFragments = new ArrayList<>();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
@@ -93,8 +106,37 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
     }
 
     private void initAnim() {
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.disc_rotate);
-        mBinding.imageMusicPlayer.startAnimation(animation);
+        PagerAdapter pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), mFragments);
+        mBinding.viewpager.setAdapter(pagerAdapter);
+    }
+
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        private List<Fragment> mFragments;
+
+        ScreenSlidePagerAdapter(FragmentManager fm, List<Fragment> fragments) {
+            super(fm);
+            mFragments = fragments;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = null;
+            switch (position) {
+                case 0:
+                    fragment = PlayControlFragment.newInstance(mTrack);
+                    break;
+                case 1:
+                    fragment = new PlayNowFragment();
+                    break;
+            }
+            mFragments.add(fragment);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
     }
 
     private void initViewModel() {
@@ -134,6 +176,7 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
                 public void accept(Bitmap bitmap) throws Exception {
                     Bitmap blurBitmap = BlurBuilder.blur(getApplicationContext(), bitmap);
                     Glide.with(getApplicationContext()).load(blurBitmap).into(mBinding.imagePlayer);
+                    Glide.with(getApplicationContext()).load(blurBitmap).into(mBinding.imagePlayer);
                 }
             });
         } else {
@@ -151,6 +194,14 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_person:
+                TimerFragment fragment = (TimerFragment) getSupportFragmentManager()
+                        .findFragmentByTag(TimerFragment.TAG);
+                if (fragment != null) {
+                    getSupportFragmentManager().beginTransaction().show(fragment).commit();
+                } else {
+                    fragment = TimerFragment.newInstance();
+                    fragment.show(getSupportFragmentManager(), fragment.getTag());
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -169,17 +220,17 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
 
     @Override
     protected void onPause() {
-        super.onPause();
         if (mÍsBinded) {
             unbindService(mConnection);
             mÍsBinded = false;
         }
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mViewModel.onDestroy();
+        super.onDestroy();
     }
 
     @Override
@@ -189,6 +240,9 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
 
     @Override
     public void onUpdateUiPlay(Track track) {
+        for (Fragment fragment : mFragments) {
+            ((UpdateUIListener) fragment).updateUI(track, mService.possotion());
+        }
         mViewModel.setData(track);
         mViewModel.getCurrentTrack().observe(this, new Observer<Track>() {
             @Override
@@ -243,12 +297,16 @@ public class PlayerActivity extends AppCompatActivity implements OnUpdateUIListe
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        mViewModel.onSeekBarPositionChange(seekBar.getProgress());
+        mPosition = seekBar.getProgress();
+        mViewModel.onSeekBarPositionChange(mPosition);
         mListener.seek(mPosition * CONVERT_MINISECOND);
+    }
+
+    public interface UpdateUIListener {
+        void updateUI(Track track, int possotion);
     }
 }
